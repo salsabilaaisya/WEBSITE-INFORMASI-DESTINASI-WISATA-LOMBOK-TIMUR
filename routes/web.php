@@ -16,7 +16,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
-    Route::get('/categories', function () {
-        return view('pages.Category.index');
-    })->name('categories.index');
+Route::livewire('/categories', 'pages::category.index')
+        ->middleware(['auth'])
+        ->name('category.index');
 });
