@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('credential_id')->unique();
             $table->json('credential');
+            $table->string('role');
+            $table->string('phone')->nullable();
             $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
 
