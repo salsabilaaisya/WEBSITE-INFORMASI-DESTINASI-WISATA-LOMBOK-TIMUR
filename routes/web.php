@@ -1,22 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+Route::view('/', 'welcome')->name('home');
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
-
-Route::livewire('/categories', 'pages::category.index')
-        ->middleware(['auth'])
-        ->name('category.index');
 });
+
+Route::livewire('articles', 'pages::articles.index')
+->name('articles.index')
+->middleware(['auth']);
+
+require __DIR__.'/settings.php';
