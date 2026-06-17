@@ -9,7 +9,11 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::livewire('articles', 'pages::articles.index')
-->name('articles.index')
-->middleware(['auth']);
+    ->name('articles.index')
+    ->middleware(['auth']);
 
-require __DIR__.'/settings.php';
+Route::livewire('/categories', 'pages::category.index')
+    ->name('categories.index')
+    ->middleware(['auth']);
+
+require __DIR__ . '/settings.php';
