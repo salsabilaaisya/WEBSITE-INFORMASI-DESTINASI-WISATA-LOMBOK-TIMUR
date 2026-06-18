@@ -12,7 +12,7 @@ Route::livewire('articles', 'pages::articles.index')
     ->name('articles.index')
     ->middleware(['auth']);
 
-Route::livewire('categories', 'pages::Category.index')
+Route::livewire('categories', 'pages::category.index')
     ->name('categories.index')
     ->middleware(['auth']);
 
