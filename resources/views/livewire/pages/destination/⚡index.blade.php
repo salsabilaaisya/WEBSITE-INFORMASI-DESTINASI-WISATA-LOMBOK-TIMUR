@@ -23,7 +23,7 @@ new class extends Component
     <flux:separator variant="subtle" />
 
     <flux:modal.trigger name="create-destination">
-        <flux:button variant="primary" icon="plus" color="rose"> Edit Destination</flux:button>
+        <flux:button variant="primary" icon="plus" color="rose"> + Tambah Destinasi</flux:button>
     </flux:modal.trigger>
 
     <livewire:destination.create />
