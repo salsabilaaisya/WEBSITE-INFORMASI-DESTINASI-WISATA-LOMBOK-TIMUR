@@ -37,15 +37,4 @@ return new class extends Migration
         Schema::dropIfExists('destinations');
     }
 
-    public function updateStatus($id)
-    {
-        $destination = Destination::findOrFail($id);
-
-        // toggle status
-        $destination->status = $destination->status === 'aktif' ? 'nonaktif' : 'aktif';
-        $destination->save();
-
-        return redirect()->back()->with('success', 'Status berhasil diubah!');
-    }
-
 };
