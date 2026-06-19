@@ -30,6 +30,11 @@
                     {{ __('Category') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item icon="home" :href="route('destination.index')"
+                    :current="request()->routeIs('destination.index')" wire:navigate>
+                    {{ __('Destinations') }}
+                </flux:sidebar.item>
+
             </flux:sidebar.group>
         </flux:sidebar.nav>
 

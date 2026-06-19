@@ -13,20 +13,18 @@ return new class extends Migration
     {
         Schema::create('destinations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->string('location');
-            $table->string('image');
-    
+            $table->string('name')->unique();
+            $table->text("description")->nullable();
+            $table->string("location");
+            $table->string("image")->nullable();
             $table->foreignId('category_id')
                   ->constrained()
-                  ->cascadeOnDelete();
-
+                  ->onDelete('cascade');
             $table->foreignId('user_id')
                   ->constrained()
-                  ->cascadeOnDelete();
+                  ->onDelete('cascade');
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
 
-            $table->string('status');
             $table->timestamps();
         });
     }
@@ -38,4 +36,16 @@ return new class extends Migration
     {
         Schema::dropIfExists('destinations');
     }
+
+    public function updateStatus($id)
+    {
+        $destination = Destination::findOrFail($id);
+
+        // toggle status
+        $destination->status = $destination->status === 'aktif' ? 'nonaktif' : 'aktif';
+        $destination->save();
+
+        return redirect()->back()->with('success', 'Status berhasil diubah!');
+    }
+
 };

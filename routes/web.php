@@ -16,4 +16,8 @@ Route::livewire('categories', 'pages::category.index')
     ->name('categories.index')
     ->middleware(['auth']);
 
+Route::livewire('/destinations', 'pages::destination.index')
+    ->name('destination.index')
+    ->middleware(['auth']);
+
 require __DIR__ . '/settings.php';

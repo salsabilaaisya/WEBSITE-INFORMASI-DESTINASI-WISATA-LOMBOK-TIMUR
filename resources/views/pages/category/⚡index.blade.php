@@ -113,9 +113,11 @@ new class extends Component
             ></textarea>
         </div>
 
-        <button type="submit">
+        <div>
+        <flux:button variant="primary" color="teal">
             Simpan
         </button>
+        </div>
     </form>
 </div>
 @if($editId)
