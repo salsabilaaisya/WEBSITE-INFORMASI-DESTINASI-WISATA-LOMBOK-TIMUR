@@ -28,6 +28,8 @@ new class extends Component
         <flux:button variant="primary" icon="plus" color="primary">Add Article</flux:button>
     </flux:modal.trigger>
 
+    <livewire:articles.create />
+
     {{-- table --}}
     <div class="overflow-x-auto">
        <flux:table :paginate="$this->articles">
