@@ -12,7 +12,7 @@ new class extends Component
     #[Computed]
     public function articles()
     { 
-        return Article::latest()->paginate(1);
+        return Article::latest()->paginate(10);
     }
 
     //
@@ -32,17 +32,20 @@ new class extends Component
     <div class="overflow-x-auto">
        <flux:table :paginate="$this->articles">
             <flux:table.columns>
+                <flux:table.column>No</flux:table.column>
                 <flux:table.column >Title</flux:table.column>
                 <flux:table.column>Content</flux:table.column>
                 <flux:table.column>Thumbnail</flux:table.column>
                 <flux:table.column>User_id</flux:table.column>
                 <flux:table.column>Published_at</flux:table.column>
-                <flux:table.column></flux:table.column>
+                <flux:table.column>Action</flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
                 @foreach ($this->articles as $article)
                     <flux:table.row :key="$article->id">
+
+                        <flux:table.cell class="whitespace-nowrap">{{ $loop->iteration }}</flux:table.cell>
                         
                         <flux:table.cell class="flex items-center gap-3">
                             {{ $article->title }}
