@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Http\Livewire\Pages\Gallery;
 
-use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
+use App\Models\Gallery;
 
-class Gallery extends Model
+class Index extends Component
 {
-    protected $fillable = [
-        'destination_id',
-        'image',
-        'caption'
-    ];
-
-    public function destination()
+    public function render()
     {
-        return $this->belongsTo(Destination::class);
+        $images = Gallery::latest()->get();
+
+        return view('pages.gallery.index', [
+            'images' => $images,
+        ]);
     }
 }

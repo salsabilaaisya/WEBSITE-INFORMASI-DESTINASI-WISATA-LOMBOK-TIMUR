@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 
-<head>
-    @include('partials.head')
+
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
@@ -25,6 +24,7 @@
                     {{ __('Articles') }}
                 </flux:sidebar.item>
 
+
                 <flux:sidebar.item icon="home" :href="route('categories.index')"
                     :current="request()->routeIs('categories.index')" wire:navigate>
                     {{ __('Category') }}
@@ -34,6 +34,14 @@
                     :current="request()->routeIs('destination.index')" wire:navigate>
                     {{ __('Destinations') }}
                 </flux:sidebar.item>
+
+              <flux:sidebar.item icon="photo" :href="route('gallery.index')"
+    :current="request()->routeIs('gallery.*')" wire:navigate>
+    {{ __('Gallery') }}
+</flux:sidebar.item>
+    
+
+               
 
             </flux:sidebar.group>
         </flux:sidebar.nav>

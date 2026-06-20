@@ -5,14 +5,17 @@ use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use App\Models\Article;
 
-new class extends Component
-{
+new class extends Component {
     use WithPagination;
 
     #[Computed]
     public function articles()
-    { 
+    {
         return Article::latest()->paginate(10);
+    }
+
+    public function edit($id){
+        $this->dispatch('edit-article', id: $id);
     }
 
     //
@@ -28,12 +31,16 @@ new class extends Component
         <flux:button variant="primary" icon="plus" color="primary">Add Article</flux:button>
     </flux:modal.trigger>
 
+    <livewire:articles.create />
+    <livewire:article.edit />
+    <x-flash-message />
+
     {{-- table --}}
     <div class="overflow-x-auto">
-       <flux:table :paginate="$this->articles">
+        <flux:table :paginate="$this->articles">
             <flux:table.columns>
                 <flux:table.column>No</flux:table.column>
-                <flux:table.column >Title</flux:table.column>
+                <flux:table.column>Title</flux:table.column>
                 <flux:table.column>Content</flux:table.column>
                 <flux:table.column>Thumbnail</flux:table.column>
                 <flux:table.column>User_id</flux:table.column>
@@ -46,7 +53,7 @@ new class extends Component
                     <flux:table.row :key="$article->id">
 
                         <flux:table.cell class="whitespace-nowrap">{{ $loop->iteration }}</flux:table.cell>
-                        
+
                         <flux:table.cell class="flex items-center gap-3">
                             {{ $article->title }}
                         </flux:table.cell>
@@ -69,15 +76,21 @@ new class extends Component
 
 
                             <flux:dropdown>
-                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
+                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
+                                </flux:button>
 
                                 <flux:menu>
-                                    <flux:menu.item icon="pencil" wire:click="edit({{ $article->id }})">Edit</flux:menu.item>
+                                    <flux:menu.item icon="pencil" wire:click="edit({{ $article->id }})">Edit
+                                    </flux:menu.item>
 
                                     <flux:menu.separator />
 
-                                    {{-- <flux:menu.item variant="danger" icon="trash" wire:click="$dispatch('confirm-delete', id: $article->id)">Delete</flux:menu.item> --}}
-                                    <flux:menu.item variant="danger" icon="trash" wire:click="$dispatch('confirm-delete', {id: {{ $article->id }}})">Delete</flux:menu.item>
+                                    {{-- <flux:menu.item variant="danger" icon="trash"
+                                        wire:click="$dispatch('confirm-delete', id: $article->id)">Delete</flux:menu.item>
+                                    --}}
+                                    <flux:menu.item variant="danger" icon="trash"
+                                        wire:click="$dispatch('confirm-delete', {id: {{ $article->id }}})">Delete
+                                    </flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
                         </flux:table.cell>
@@ -88,5 +101,5 @@ new class extends Component
 
 
     </div>
-    
+
 </div>
