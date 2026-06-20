@@ -1,48 +1,48 @@
 @php
     $totalDestinations = \App\Models\Destination::count();
-    $totalArticles     = \App\Models\Article::count();
-    $totalCategories   = \App\Models\Category::count();
-    $totalGalleries    = \App\Models\Gallery::count();
+    $totalArticles = \App\Models\Article::count();
+    $totalCategories = \App\Models\Category::count();
+    $totalGalleries = \App\Models\Gallery::count();
 
     $recentDestinations = \App\Models\Destination::with('category')->latest()->take(5)->get();
-    $recentArticles     = \App\Models\Article::latest()->take(5)->get();
+    $recentArticles = \App\Models\Article::latest()->take(5)->get();
 
     $stats = [
         [
-            'label'    => 'Destinasi Wisata',
-            'value'    => $totalDestinations,
-            'desc'     => 'Total destinasi terdaftar',
-            'icon'     => 'map-pin',
+            'label' => 'Destinasi Wisata',
+            'value' => $totalDestinations,
+            'desc' => 'Total destinasi terdaftar',
+            'icon' => 'map-pin',
             'gradient' => 'from-orange-400 to-rose-500',
-            'bg'       => 'bg-orange-50 dark:bg-orange-950/30',
-            'text'     => 'text-orange-600 dark:text-orange-400',
+            'bg' => 'bg-orange-50 dark:bg-orange-950/30',
+            'text' => 'text-orange-600 dark:text-orange-400',
         ],
         [
-            'label'    => 'Artikel & Berita',
-            'value'    => $totalArticles,
-            'desc'     => 'Total artikel diterbitkan',
-            'icon'     => 'newspaper',
+            'label' => 'Artikel & Berita',
+            'value' => $totalArticles,
+            'desc' => 'Total artikel diterbitkan',
+            'icon' => 'newspaper',
             'gradient' => 'from-sky-400 to-blue-600',
-            'bg'       => 'bg-sky-50 dark:bg-sky-950/30',
-            'text'     => 'text-sky-600 dark:text-sky-400',
+            'bg' => 'bg-sky-50 dark:bg-sky-950/30',
+            'text' => 'text-sky-600 dark:text-sky-400',
         ],
         [
-            'label'    => 'Kategori',
-            'value'    => $totalCategories,
-            'desc'     => 'Kategori destinasi & artikel',
-            'icon'     => 'tag',
+            'label' => 'Kategori',
+            'value' => $totalCategories,
+            'desc' => 'Kategori destinasi & artikel',
+            'icon' => 'tag',
             'gradient' => 'from-violet-400 to-purple-600',
-            'bg'       => 'bg-violet-50 dark:bg-violet-950/30',
-            'text'     => 'text-violet-600 dark:text-violet-400',
+            'bg' => 'bg-violet-50 dark:bg-violet-950/30',
+            'text' => 'text-violet-600 dark:text-violet-400',
         ],
         [
-            'label'    => 'Galeri Foto',
-            'value'    => $totalGalleries,
-            'desc'     => 'Total foto dalam galeri',
-            'icon'     => 'photo',
+            'label' => 'Galeri Foto',
+            'value' => $totalGalleries,
+            'desc' => 'Total foto dalam galeri',
+            'icon' => 'photo',
             'gradient' => 'from-emerald-400 to-teal-600',
-            'bg'       => 'bg-emerald-50 dark:bg-emerald-950/30',
-            'text'     => 'text-emerald-600 dark:text-emerald-400',
+            'bg' => 'bg-emerald-50 dark:bg-emerald-950/30',
+            'text' => 'text-emerald-600 dark:text-emerald-400',
         ],
     ];
 @endphp
@@ -54,18 +54,23 @@
         <div class="grid gap-4 lg:grid-cols-5 lg:items-stretch">
 
             {{-- Hero Banner — spans 2 cols on desktop --}}
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-accent px-6 py-8 text-white shadow-lg lg:col-span-2">
+            <div
+                class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-accent px-6 py-8 text-white shadow-lg lg:col-span-2">
                 {{-- decorative circles --}}
-                <div class="pointer-events-none absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-2xl"></div>
-                <div class="pointer-events-none absolute -bottom-8 -left-8 size-40 rounded-full bg-white/10 blur-2xl"></div>
+                <div class="pointer-events-none absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-2xl">
+                </div>
+                <div class="pointer-events-none absolute -bottom-8 -left-8 size-40 rounded-full bg-white/10 blur-2xl">
+                </div>
 
                 <div class="relative flex h-full flex-col justify-between gap-4">
                     <div>
-                        <p class="text-sm font-medium text-white/70">Selamat datang kembali 👋</p>
-                        <h1 class="mt-1 text-2xl font-bold tracking-tight">{{ auth()->user()->name }}</h1>
-                        <p class="mt-1 text-sm text-white/70">
+                        <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Selamat datang kembali 👋</p>
+                        <h1 class="mt-1 text-2xl font-bold tracking-tight text-zinc-500 dark:text-zinc-400">
+                            {{ auth()->user()->name }}</h1>
+                        <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
                             {{ now()->translatedFormat('l, d F Y') }}<br class="hidden sm:inline">
-                            <span class="hidden sm:inline">&mdash; </span>Website Informasi Destinasi Wisata Lombok Timur
+                            <span class="hidden sm:inline">&mdash; </span>Website Informasi Destinasi Wisata Lombok
+                            Timur
                         </p>
                     </div>
                     <div>
@@ -79,7 +84,8 @@
                 @foreach ($stats as $stat)
                     <flux:card class="group relative overflow-hidden p-3 transition-shadow duration-300 hover:shadow-md">
                         {{-- gradient accent bar --}}
-                        <div class="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r {{ $stat['gradient'] }} rounded-t-xl"></div>
+                        <div class="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r {{ $stat['gradient'] }} rounded-t-xl">
+                        </div>
 
                         <div class="flex items-center gap-3 pt-1">
                             {{-- icon --}}
@@ -89,7 +95,8 @@
 
                             {{-- text --}}
                             <div class="min-w-0">
-                                <p class="truncate text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                                <p
+                                    class="truncate text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                                     {{ $stat['label'] }}
                                 </p>
                                 <p class="text-xl font-bold tabular-nums leading-tight">
@@ -114,7 +121,8 @@
                             <flux:heading size="lg">Destinasi Terbaru</flux:heading>
                             <flux:subheading class="text-xs">5 destinasi yang baru ditambahkan</flux:subheading>
                         </div>
-                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('destination.index')" wire:navigate>
+                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('destination.index')"
+                            wire:navigate>
                             Lihat semua
                         </flux:button>
                     </div>
@@ -133,10 +141,11 @@
                                         <div class="flex items-center gap-3">
                                             @if ($destination->image)
                                                 <img src="{{ asset('storage/image/' . $destination->image) }}"
-                                                     alt="{{ $destination->name }}"
-                                                     class="size-9 rounded-lg object-cover shrink-0">
+                                                    alt="{{ $destination->name }}"
+                                                    class="size-9 rounded-lg object-cover shrink-0">
                                             @else
-                                                <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-orange-400 to-rose-500">
+                                                <div
+                                                    class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-orange-400 to-rose-500">
                                                     <flux:icon.map-pin class="size-4 text-white" />
                                                 </div>
                                             @endif
@@ -183,7 +192,8 @@
                             <flux:heading size="lg">Artikel Terbaru</flux:heading>
                             <flux:subheading class="text-xs">5 artikel terbaru</flux:subheading>
                         </div>
-                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('articles.index')" wire:navigate>
+                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('articles.index')"
+                            wire:navigate>
                             Lihat semua
                         </flux:button>
                     </div>
@@ -192,7 +202,8 @@
                         @forelse ($recentArticles as $article)
                             <div class="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
                                 {{-- colored dot --}}
-                                <div class="mt-1.5 size-2 shrink-0 rounded-full bg-gradient-to-br from-sky-400 to-blue-600"></div>
+                                <div class="mt-1.5 size-2 shrink-0 rounded-full bg-gradient-to-br from-sky-400 to-blue-600">
+                                </div>
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-medium leading-snug">
                                         {{ Str::limit($article->title, 45) }}
