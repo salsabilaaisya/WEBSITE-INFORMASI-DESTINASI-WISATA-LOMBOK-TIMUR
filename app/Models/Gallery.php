@@ -1,18 +1,32 @@
 <?php
 
-namespace App\Http\Livewire\Pages\Gallery;
+namespace App\Models;
 
-use Livewire\Component;
-use App\Models\Gallery;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Index extends Component
+class Gallery extends Model
 {
-    public function render()
-    {
-        $images = Gallery::latest()->get();
+    use HasFactory;
 
-        return view('pages.gallery.index', [
-            'images' => $images,
-        ]);
+    protected $fillable = [
+        'title',
+        'image',
+        'caption',
+        'category_id',
+        'user_id',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
+
+
+
