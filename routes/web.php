@@ -20,4 +20,12 @@ Route::livewire('/destinations', 'pages::destination.index')
     ->name('destination.index')
     ->middleware(['auth']);
 
+Route::livewire('/destinations/create', 'pages::destination.form')
+    ->name('destination.form')
+    ->middleware(['auth']);
+
+Route::livewire('/destination/create', 'pages::DestinationIndex::class')
+    ->name('destination.index')
+    ->middleware(['auth']);
+
 require __DIR__ . '/settings.php';

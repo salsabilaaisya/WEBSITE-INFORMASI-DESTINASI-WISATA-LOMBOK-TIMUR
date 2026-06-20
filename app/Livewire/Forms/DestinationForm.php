@@ -2,16 +2,23 @@
 
 namespace App\Livewire\Forms;
 
-use Livewire\Attributes\Validate;
+use Livewire\Component;
+use App\Models\Destination;
+use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class DestinationForm extends Form
 {
     public string $name = '';
-    
     public string $description = '';
+    public string $location = '';
+    public string $category_id = '';
+    public string $status = 'aktif'; 
 
-    public ?Destination $destination = null;
+    
+    public $cover_path; 
+
+    public ?int $destinationId = null;
 
     public function rules(): array
     {
@@ -21,34 +28,70 @@ class DestinationForm extends Form
                 'string',
                 'min:3',
                 'max:255',
-                Rule::unique('destinations', 'name')->ignore($this->destination?->id),
+                
+                Rule::unique('destinations', 'name')->ignore($this->destinationId),
             ],
-            'description' => [
-                'nullable',
-                'string',
-                'max:1000',
-            ],
+            'description' => ['required', 'string', 'max:1000'],
+            'location'    => ['required', 'string'],
+            'status'      => ['required', 'in:aktif,non_aktif'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'cover_path'  => ['nullable', 'image', 'max:2048'], 
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required'        => 'Nama destinasi wajib diisi',
+            'description.required' => 'Deskripsi wajib diisi',
+            'location.required'    => 'Lokasi wajib diisi',
+            'category_id.required' => 'Silakan pilih kategori',
         ];
     }
 
     public function setdestination(Destination $destination): void
     {
-        $this->destination = $destination;
+        $this->destinationId = $destination->id;
+
         $this->name = $destination->name;
         $this->description = $destination->description ?? '';
+        $this->location = $destination->location;
+        $this->status = $destination->status; 
+        $this->category_id = $destination->category_id;
     }
 
     public function store()
     {
         $this->validate();
-        destination::create($this->only(['name', 'description']));
+
+        $data = $this->only(['name', 'description', 'location', 'status', 'category_id']);
+        $data['user_id'] = auth()->id(); 
+
+        if ($this->cover_path) {
+            $data['cover_path'] = $this->cover_path->store('destinations', 'public');
+        }
+
+        Destination::create($data);
+        
         $this->reset();
     }
 
-    // update
-    public function update()
+    public function update($id)
     {
         $this->validate();
-        $this->destination->update($this->only(['name', 'description']));
+        
+        $destination = Destination::find($id);
+        
+        if ($destination) {
+            $data = $this->only(['name', 'description', 'location', 'status', 'category_id']);
+            
+            if ($this->cover_path && !is_string($this->cover_path)) {
+                $data['cover_path'] = $this->cover_path->store('destinations', 'public');
+            }
+
+            $destination->update($data);
+        }
+        
+        $this->reset();
     }
 }
