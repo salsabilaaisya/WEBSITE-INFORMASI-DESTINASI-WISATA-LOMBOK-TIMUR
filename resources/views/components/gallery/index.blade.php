@@ -1,6 +1,6 @@
 <?php
 
-use Livewire\Component;
+use Livewire\Volt\Component;
 use App\Models\Gallery;
 
 new class extends Component
@@ -8,13 +8,13 @@ new class extends Component
     public function with(): array
     {
         return [
-            'images' => Gallery::latest()->get(),
+            'images' => Gallery::with('destination')->latest()->get(),
         ];
     }
 };
 ?>
 
-<div class="max-w-7xl mx-auto space-y-4">
+<div class="max-w-7xl mx-auto space-y-4 p-6">
     <flux:heading size="xl" class="text-pink-800 dark:text-white">
         Gallery
     </flux:heading>
@@ -25,17 +25,12 @@ new class extends Component
 
     <flux:separator variant="subtle" />
 
-    <div class="flex justify-end">
-        <flux:button variant="primary" color="rose" icon="plus">
-            Tambah Gallery
-        </flux:button>
-    </div>
-
     <flux:table>
         <flux:table.columns>
             <flux:table.column>ID</flux:table.column>
             <flux:table.column>Image</flux:table.column>
-            <flux:table.column>Title</flux:table.column>
+            <flux:table.column>Caption</flux:table.column>
+            <flux:table.column>Destination</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -47,7 +42,7 @@ new class extends Component
                         @if ($image->image)
                             <img
                                 src="{{ asset('storage/' . $image->image) }}"
-                                alt="{{ $image->title }}"
+                                alt="{{ $image->caption }}"
                                 class="w-16 h-16 rounded-lg object-cover"
                             >
                         @else
@@ -56,12 +51,16 @@ new class extends Component
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        {{ $image->title ?? '-' }}
+                        {{ $image->caption ?? '-' }}
+                    </flux:table.cell>
+
+                    <flux:table.cell>
+                        {{ $image->destination->name ?? '-' }}
                     </flux:table.cell>
                 </flux:table.row>
             @empty
                 <flux:table.row>
-                    <flux:table.cell colspan="3" class="text-center text-zinc-500 py-6">
+                    <flux:table.cell colspan="4" class="text-center py-6 text-zinc-500">
                         Belum ada data gallery
                     </flux:table.cell>
                 </flux:table.row>
