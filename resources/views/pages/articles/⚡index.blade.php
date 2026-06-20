@@ -14,6 +14,10 @@ new class extends Component {
         return Article::latest()->paginate(10);
     }
 
+    public function edit($id){
+        $this->dispatch('edit-article', id: $id);
+    }
+
     //
 };
 ?>
@@ -28,6 +32,8 @@ new class extends Component {
     </flux:modal.trigger>
 
     <livewire:articles.create />
+    <livewire:article.edit />
+    <x-flash-message />
 
     {{-- table --}}
     <div class="overflow-x-auto">

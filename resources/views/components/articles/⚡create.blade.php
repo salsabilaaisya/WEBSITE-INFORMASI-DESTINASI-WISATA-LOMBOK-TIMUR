@@ -9,12 +9,25 @@ new class extends Component {
     public function save()
     {
         $this->form->store();
+        Flux::modal('create-article')->close();
+
+        // session
+        session()->flash('success', 'Article created successfully');
+
+        $this->redirectRoute('articles.index',navigate: true);
+
+    }
+
+    public function resetForm()
+    {
+        $this->resetValidation();
+        $this->form->reset();
     }
 };
 ?>
 
 <div>
-    <flux:modal name="create-article" class="md:w-150">
+    <flux:modal name="create-article" class="md:w-150" x-on:close="$wire.resetForm()">
         <form class="space-y-8" wire:submit.prevent="save">
             {{-- header --}}
             <div class="space-y-2">
