@@ -5,8 +5,7 @@ use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use App\Models\Destination;
 
-new class extends Component
-{
+new class extends Component {
     use WithPagination;
 
     #[Computed]
@@ -22,7 +21,7 @@ new class extends Component
         Flux::modal('create-destination')->show();
     }
 
-     public function save($id)
+    public function save($id)
     {
         $destination = Destination::find($id);
         if ($this->form->destinationId) {
@@ -52,13 +51,13 @@ new class extends Component
     <flux:separator variant="subtle" />
 
     <flux:modal.trigger name="create-destination">
-        <flux:button variant="primary" icon="plus" color="rose"> Tambah Destinasi</flux:button>
+        <flux:button variant="primary" icon="plus" color="primary"> Tambah Destinasi</flux:button>
     </flux:modal.trigger>
 
     <flux:modal name="create-destination" class="md:max-w-lg">
         <livewire:destination.create />
     </flux:modal>
- 
+
     {{-- table --}}
     <div class="overflow-x-auto">
         <flux:table :paginate="$this->destinations">
@@ -75,73 +74,71 @@ new class extends Component
             </flux:table.columns>
 
             <flux:table.rows>
-            @foreach ($this->destinations as $destination)
-                <flux:table.row :key="$destination->id">
+                @foreach ($this->destinations as $destination)
+                    <flux:table.row :key="$destination->id">
 
-                    <flux:table.cell>
-                        {{ $loop->iteration + $this->destinations->firstItem() - 1 }}
-                    </flux:table.cell>
+                        <flux:table.cell>
+                            {{ $loop->iteration + $this->destinations->firstItem() - 1 }}
+                        </flux:table.cell>
 
-                    <flux:table.cell class="flex items-center gap-3">
-                        {{ $destination->name }}
-                    </flux:table.cell>
+                        <flux:table.cell class="flex items-center gap-3">
+                            {{ $destination->name }}
+                        </flux:table.cell>
 
-                    <flux:table.cell class="text-zinc-500 dark:text-zinc-400">
-                        {{ $destination->description ?? '-' }}
-                    </flux:table.cell>
+                        <flux:table.cell class="text-zinc-500 dark:text-zinc-400">
+                            {{ $destination->description ?? '-' }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        {{ $destination->location }}
-                    </flux:table.cell>
+                        <flux:table.cell>
+                            {{ $destination->location }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                    @if($destination->image)
-                        <img
-                            src="{{ asset('storage/image/' . $destination->image) }}"
-                            alt="{{ $destination->name }}" width="120"
-                            class="w-14 h-14 object-cover rounded-lg">
-                    @endif
-                    </flux:table.cell>
+                        <flux:table.cell>
+                            @if($destination->image)
+                                <img src="{{ asset('storage/image/' . $destination->image) }}" alt="{{ $destination->name }}"
+                                    width="120" class="w-14 h-14 object-cover rounded-lg">
+                            @endif
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        {{ $destination->category_id }}
-                    </flux:table.cell>
+                        <flux:table.cell>
+                            {{ $destination->category_id }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        {{ $destination->user_id }}
-                    </flux:table.cell>
+                        <flux:table.cell>
+                            {{ $destination->user_id }}
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        @if($destination->status === 'aktif')
-                            <flux:badge color="green" size="sm" inset="top bottom">Aktif</flux:badge>
-                        @else
-                            <flux:badge color="zinc" size="sm" inset="top bottom">Tidak Aktif</flux:badge>
-                        @endif
-                    </flux:table.cell>
+                        <flux:table.cell>
+                            @if($destination->status === 'aktif')
+                                <flux:badge color="green" size="sm" inset="top bottom">Aktif</flux:badge>
+                            @else
+                                <flux:badge color="zinc" size="sm" inset="top bottom">Tidak Aktif</flux:badge>
+                            @endif
+                        </flux:table.cell>
 
-                    <flux:table.cell>
-                        <flux:dropdown>
-                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal"></flux:button>
+                        <flux:table.cell>
+                            <flux:dropdown>
+                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal"></flux:button>
 
-                            <flux:menu>
-                                <flux:menu.item icon="pencil" wire:click="edit({{ $destination->id }})">
-                                    Edit
-                                </flux:menu.item>
+                                <flux:menu>
+                                    <flux:menu.item icon="pencil" wire:click="edit({{ $destination->id }})">
+                                        Edit
+                                    </flux:menu.item>
 
-                                <flux:menu.separator />
+                                    <flux:menu.separator />
 
-                                <flux:menu.item
-                                    variant="danger"
-                                    icon="trash"
-                                    wire:click="delete({{ $destination->id }})"
-                                    wire:confirm="Apakah Anda yakin ingin mengahapus destinasi ini?">
-                                    Delete
-                                </flux:menu.item>
-                            </flux:menu>
-                        </flux:dropdown>
-                    </flux:table.cell>
+                                    <flux:menu.item variant="danger" icon="trash"
+                                        wire:click="delete({{ $destination->id }})"
+                                        wire:confirm="Apakah Anda yakin ingin mengahapus destinasi ini?">
+                                        Delete
+                                    </flux:menu.item>
+                                </flux:menu>
+                            </flux:dropdown>
+                        </flux:table.cell>
 
-                </flux:table.row>
-            @endforeach
+                    </flux:table.row>
+                @endforeach
             </flux:table.rows>
-        </flux:table> </div> </div>
+        </flux:table>
+    </div>
+</div>
