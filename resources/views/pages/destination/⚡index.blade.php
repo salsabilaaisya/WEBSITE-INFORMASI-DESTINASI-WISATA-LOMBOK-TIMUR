@@ -46,12 +46,12 @@ new class extends Component {
 ?>
 
 <div class="max-w-7xl mx-auto space-y-4">
-    <flux:heading size="xl" class="text-pink-800 dark:text-white">Destinations</flux:heading>
+    <flux:heading size="xl" class="text-zinc-800 dark:text-white">Destination</flux:heading>
     <flux:subheading size="lg" class="text-zinc-600 dark:text-zinc-400">Manage your Destinations</flux:subheading>
     <flux:separator variant="subtle" />
 
     <flux:modal.trigger name="create-destination">
-        <flux:button variant="primary" icon="plus" color="primary"> Tambah Destinasi</flux:button>
+        <flux:button variant="primary" icon="plus" color="primary"> Add Destinasi</flux:button>
     </flux:modal.trigger>
 
     <flux:modal name="create-destination" class="md:max-w-lg">

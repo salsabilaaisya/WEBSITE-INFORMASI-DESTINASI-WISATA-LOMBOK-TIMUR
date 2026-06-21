@@ -2,30 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-
-    use HasFactory;
-
     protected $fillable = [
-        'title',
+        'destination_id',
         'image',
         'caption',
-        'category_id',
-        'user_id',
     ];
 
-    public function user()
+    public function destination()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Destination::class);
     }
 }
