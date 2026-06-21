@@ -47,8 +47,6 @@ new class extends Component {
 
                 <flux:input label="Thumbnail" placeholder="Enter thumbnail filename" wire:model="form.thumbnail" />
 
-                <flux:input label="User ID" type="number" placeholder="Enter user id" wire:model="form.user_id" />
-
                 <flux:input label="Published At" type="date" wire:model="form.published_at" />
             </div>
 

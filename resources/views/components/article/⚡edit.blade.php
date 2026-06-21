@@ -94,7 +94,6 @@ new class extends Component
                     label="User ID"
                     type="number"
                     placeholder="Enter user id"
-                    wire:model="form.user_id"
                     wire:dirty.class.text-red-500
                 />
 
