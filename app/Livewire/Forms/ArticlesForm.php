@@ -12,7 +12,6 @@ class ArticlesForm extends Form
     public string $title = '';
     public string $content = '';
     public string $thumbnail = '';
-    public int $user_id = 0;
     public string $published_at = '';
     public ?Article $article = null;
 
@@ -37,11 +36,6 @@ class ArticlesForm extends Form
             'string',
             'max:255',
             ],
-            'user_id' => [
-            'required',
-            'integer',
-            'exists:users,id',
-            ],
             'published_at' => [
             'required',
             'date',
@@ -52,7 +46,14 @@ class ArticlesForm extends Form
     public function store()
     {
         $this->validate();
-        Article::create($this->only(['title', 'content', 'thumbnail', 'user_id', 'published_at']));
+
+        Article::create([
+        'title' => $this->title,
+        'content' => $this->content,
+        'thumbnail' => $this->thumbnail,
+        'user_id' => auth()->id(),
+        'published_at' => $this->published_at,]);
+
         $this->reset();
     }
 
@@ -70,13 +71,12 @@ class ArticlesForm extends Form
     public function update()
     {
         $this->validate();
-        $this->article->update(
-        $this->only([
-            'title',
-            'content',
-            'thumbnail',
-            'user_id',
-            'published_at']));
+        $this->article->update([
+            'title' => $this->title,
+            'content' => $this->content,
+            'thumbnail' => $this->thumbnail,
+            'user_id' => auth()->id(),
+            'published_at' => $this->published_at,]);
     }
 }
 
