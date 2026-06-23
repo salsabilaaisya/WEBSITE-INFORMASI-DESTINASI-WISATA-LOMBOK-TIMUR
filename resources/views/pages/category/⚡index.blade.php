@@ -11,6 +11,23 @@ new class extends Component {
     public string $editName = '';
     public string $editDescription = '';
 
+    public function save()
+    {
+        $this->validate([
+            'name' => ['required', 'min:3'],
+            'description' => ['nullable'],
+        ]);
+
+        Category::create([
+            'name' => $this->name,
+            'description' => $this->description,
+        ]);
+
+        $this->reset(['name', 'description']);
+
+        session()->flash('success', 'Kategori berhasil ditambahkan!');
+    }
+
     public function edit($id)
     {
         $category = Category::findOrFail($id);
@@ -34,27 +51,19 @@ new class extends Component {
         $this->reset([
             'editId',
             'editName',
-            'editDescription'
+            'editDescription',
         ]);
 
         session()->flash('success', 'Kategori berhasil diperbarui!');
     }
 
-    public function save()
+    public function cancelEdit()
     {
-        $this->validate([
-            'name' => ['required', 'min:3'],
-            'description' => ['nullable'],
+        $this->reset([
+            'editId',
+            'editName',
+            'editDescription',
         ]);
-
-        Category::create([
-            'name' => $this->name,
-            'description' => $this->description,
-        ]);
-
-        $this->reset(['name', 'description']);
-
-        session()->flash('success', 'Kategori berhasil ditambahkan!');
     }
 
     public function delete($id)
@@ -71,100 +80,141 @@ new class extends Component {
         ];
     }
 };
-
 ?>
 
-<div>
-    @if(session('success'))
-        <div class="mb-4 rounded bg-green-100 p-3 text-green-700">
+<div class="max-w-7xl mx-auto space-y-6">
+    <flux:heading size="xl" class="text-zinc-800 dark:text-white">
+        Category
+    </flux:heading>
+
+    <flux:subheading size="lg" class="text-zinc-600 dark:text-zinc-400">
+        Manage your categories
+    </flux:subheading>
+
+    <flux:separator variant="subtle" />
+
+    @if (session('success'))
+        <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700 dark:border-green-800 dark:bg-green-950/30 dark:text-green-300">
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="mb-6 rounded border p-4">
-        <h2 class="mb-4 text-lg font-semibold">
+    {{-- FORM TAMBAH CATEGORY --}}
+    <div class="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <flux:heading size="lg" class="mb-4 text-zinc-900 dark:text-white">
             Tambah Kategori
-        </h2>
+        </flux:heading>
 
-        <form wire:submit="save" class="space-y-3">
-            <div>
-                <label class="block mb-1">Nama Kategori</label>
+        <form wire:submit.prevent="save" class="space-y-4">
+            <flux:input
+                label="Nama Kategori"
+                wire:model="name"
+                placeholder="Masukkan nama kategori"
+            />
 
-                <input type="text" wire:model="name" class="w-full rounded border p-2">
+            @error('name')
+                <p class="text-sm text-red-500">{{ $message }}</p>
+            @enderror
 
-                @error('name')
-                    <div class="text-red-500 text-sm">
-                        {{ $message }}
-                    </div>
-                @enderror
-            </div>
+            <flux:textarea
+                label="Deskripsi"
+                wire:model="description"
+                placeholder="Masukkan deskripsi kategori"
+            />
 
-            <div>
-                <label class="block mb-1">Deskripsi</label>
+            @error('description')
+                <p class="text-sm text-red-500">{{ $message }}</p>
+            @enderror
 
-                <textarea wire:model="description" class="w-full rounded border p-2"></textarea>
-            </div>
-
-            <div>
-                <flux:button variant="primary" color="primary">
+            <div class="flex justify-end">
+                <flux:button type="submit" variant="primary" color="primary">
                     Simpan
-                    </button>
+                </flux:button>
             </div>
         </form>
     </div>
-    @if($editId)
 
-        <div class="mb-6 rounded border p-4 bg-yellow-50">
-            <h2 class="mb-4 text-lg font-semibold">
+    {{-- FORM EDIT CATEGORY --}}
+    @if ($editId)
+        <div class="rounded-xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm dark:border-yellow-800 dark:bg-yellow-950/20">
+            <flux:heading size="lg" class="mb-4 text-zinc-900 dark:text-white">
                 Edit Kategori
-            </h2>
+            </flux:heading>
 
-            <form wire:submit="update">
+            <form wire:submit.prevent="update" class="space-y-4">
+                <flux:input
+                    label="Nama Kategori"
+                    wire:model="editName"
+                    placeholder="Masukkan nama kategori"
+                />
 
-                <input type="text" wire:model="editName" class="w-full rounded border p-2 mb-3">
+                @error('editName')
+                    <p class="text-sm text-red-500">{{ $message }}</p>
+                @enderror
 
-                <textarea wire:model="editDescription" class="w-full rounded border p-2 mb-3"></textarea>
+                <flux:textarea
+                    label="Deskripsi"
+                    wire:model="editDescription"
+                    placeholder="Masukkan deskripsi kategori"
+                />
 
-                <button type="submit" class="rounded bg-green-600 px-4 py-2 text-white">
-                    Update
-                </button>
+                <div class="flex justify-end gap-3">
+                    <flux:button type="button" variant="outline" wire:click="cancelEdit">
+                        Batal
+                    </flux:button>
 
+                    <flux:button type="submit" variant="primary" color="amber">
+                        Update
+                    </flux:button>
+                </div>
             </form>
         </div>
-
     @endif
-    <hr class="my-6">
 
-    <table class="w-full border">
-        <thead>
-            <tr>
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Nama</th>
-                <th class="border p-2">Deskripsi</th>
-                <th class="border p-2">Aksi</th>
-            </tr>
-        </thead>
+    {{-- TABLE CATEGORY --}}
+    <flux:table>
+        <flux:table.columns>
+            <flux:table.column>ID</flux:table.column>
+            <flux:table.column>Name</flux:table.column>
+            <flux:table.column>Description</flux:table.column>
+            <flux:table.column>Action</flux:table.column>
+        </flux:table.columns>
 
-        <tbody>
-            @foreach($categories as $category)
-                <tr>
-                    <td class="border p-2">{{ $category->id }}</td>
-                    <td class="border p-2">{{ $category->name }}</td>
-                    <td class="border p-2">{{ $category->description }}</td>
+        <flux:table.rows>
+            @forelse ($categories as $category)
+                <flux:table.row :key="$category->id">
+                    <flux:table.cell>{{ $category->id }}</flux:table.cell>
+                    <flux:table.cell>{{ $category->name }}</flux:table.cell>
+                    <flux:table.cell>{{ $category->description ?: '-' }}</flux:table.cell>
 
-                    <td class="border p-2">
-                        <button wire:click="edit({{ $category->id }})"
-                            class="mr-2 rounded bg-yellow-500 px-3 py-1 text-white">
-                            ✏️ Edit
-                        </button>
-                        <button wire:click="delete({{ $category->id }})"
-                            class="inline-flex items-center gap-2 rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">
-                            🗑️ Hapus
-                        </button>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    <flux:table.cell>
+                        <div class="flex items-center gap-2">
+                            <flux:button
+                                size="sm"
+                                variant="outline"
+                                wire:click="edit({{ $category->id }})"
+                            >
+                                Edit
+                            </flux:button>
 
+                            <flux:button
+                                size="sm"
+                                variant="danger"
+                                wire:click="delete({{ $category->id }})"
+                                wire:confirm="Yakin ingin menghapus kategori ini?"
+                            >
+                                Hapus
+                            </flux:button>
+                        </div>
+                    </flux:table.cell>
+                </flux:table.row>
+            @empty
+                <flux:table.row>
+                    <flux:table.cell colspan="4" class="py-6 text-center text-zinc-500">
+                        Belum ada data kategori
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforelse
+        </flux:table.rows>
+    </flux:table>
 </div>
