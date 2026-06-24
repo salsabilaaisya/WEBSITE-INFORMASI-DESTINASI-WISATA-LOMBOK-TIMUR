@@ -11,7 +11,7 @@ class ArticlesForm extends Form
 {
     public string $title = '';
     public string $content = '';
-    public string $thumbnail = '';
+    public $thumbnail;
     public string $published_at = '';
     public ?Article $article = null;
 
@@ -33,9 +33,11 @@ class ArticlesForm extends Form
             ],
             'thumbnail' => [
             'nullable',
-            'string',
-            'max:255',
+            'image',
+            'mimes:jpg,jpeg,png,webp',
+            'max:2048',
             ],
+        
             'published_at' => [
             'required',
             'date',
@@ -47,12 +49,23 @@ class ArticlesForm extends Form
     {
         $this->validate();
 
+        $thumbnailPath = null;
+
+        if ($this->thumbnail) {
+
+            $thumbnailPath = $this->thumbnail->store(
+                'articles',
+                'public'
+            );
+        }
+
         Article::create([
-        'title' => $this->title,
-        'content' => $this->content,
-        'thumbnail' => $this->thumbnail,
-        'user_id' => auth()->id(),
-        'published_at' => $this->published_at,]);
+            'title' => $this->title,
+            'content' => $this->content,
+            'thumbnail' => $thumbnailPath,
+            'user_id' => auth()->id(),
+            'published_at' => $this->published_at,
+        ]);
 
         $this->reset();
     }

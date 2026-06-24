@@ -62,7 +62,17 @@ new class extends Component {
                             {{ $article->content ?? '-' }}
                         </flux:table.cell>
 
-                        <flux:table.cell class="whitespace-nowrap">{{ $article->thumbnail ?? '-' }}</flux:table.cell>
+                        <flux:table.cell class="whitespace-nowrap">
+                            @if($article->thumbnail)
+                                <img
+                                    src="{{ asset('storage/' . $article->thumbnail) }}"
+                                    alt="Thumbnail"
+                                    class="w-16 h-16 object-cover rounded"
+                                >
+                            @else
+                                -
+                            @endif
+                        </flux:table.cell>
 
                         <flux:table.cell class="text-zinc-500 dark:text-zinc-400">
                             {{ $article->user_id ?? '-' }}
