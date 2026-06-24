@@ -1,80 +1,198 @@
 <?php
 
+namespace App\Livewire;
+
+use App\Models\Gallery;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Gallery;
-use App\Models\Destination;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Storage;
 
-new class extends Component
+class GalleryManager extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
 
-    public $destination_id = '';
-    public $caption = '';
-    public $image;
+    // Form fields
+    public string $title = '';
+    public string $description = '';
+    public string $category = '';
+    public bool $is_featured = false;
+    public $photo; // uploaded file
 
-    public function with(): array
+    // UI state
+    public bool $showModal = false;
+    public bool $showDeleteModal = false;
+    public bool $showLightbox = false;
+    public ?int $editingId = null;
+    public ?int $deletingId = null;
+    public ?int $lightboxId = null;
+
+    // Filter & search
+    public string $search = '';
+    public string $filterCategory = '';
+    public string $viewMode = 'grid'; // grid | list
+
+    protected function rules(): array
     {
+        $photoRule = $this->editingId
+            ? 'nullable|image|max:2048'
+            : 'required|image|max:2048';
+
         return [
-            'images' => Gallery::with('destination')->latest()->get(),
-            'destinations' => Destination::latest()->get(),
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'category'    => 'nullable|string|max:100',
+            'is_featured' => 'boolean',
+            'photo'       => $photoRule,
         ];
     }
 
-    public function save()
+    protected $messages = [
+        'title.required'  => 'Judul foto wajib diisi.',
+        'photo.required'  => 'Foto wajib diunggah.',
+        'photo.image'     => 'File harus berupa gambar.',
+        'photo.max'       => 'Ukuran foto maksimal 2MB.',
+    ];
+
+    public function updatingSearch(): void
     {
-        $this->validate([
-            'destination_id' => 'required|exists:destinations,id',
-            'caption' => 'nullable|string',
-            'image' => 'required|image|max:2048',
-        ], [
-            'destination_id.required' => 'Destination wajib dipilih.',
-            'destination_id.exists' => 'Destination tidak valid.',
-            'image.required' => 'Image wajib diupload.',
-            'image.image' => 'File harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 2MB.',
-        ]);
-
-        $imagePath = $this->image->store('gallery', 'public');
-
-        Gallery::create([
-            'destination_id' => $this->destination_id,
-            'image' => $imagePath,
-            'caption' => $this->caption,
-        ]);
-
-        $this->reset(['destination_id', 'caption', 'image']);
-
-        Flux::modal('add-gallery')->close();
-
-        session()->flash('success', 'Gallery berhasil ditambahkan');
+        $this->resetPage();
     }
 
-    public function edit($id)
+    public function updatingFilterCategory(): void
     {
-        session()->flash('info', 'Fitur edit gallery belum dibuat');
+        $this->resetPage();
     }
 
-        public function delete($id)
+    public function openCreateModal(): void
     {
-        $gallery = Gallery::find($id);
+        $this->resetForm();
+        $this->editingId = null;
+        $this->showModal = true;
+    }
 
-        if (!$gallery) {
-            session()->flash('error', 'Gallery tidak ditemukan');
-            return;
+    public function openEditModal(int $id): void
+    {
+        $gallery = Gallery::findOrFail($id);
+        $this->editingId = $id;
+        $this->title       = $gallery->title;
+        $this->description = $gallery->description ?? '';
+        $this->category    = $gallery->category ?? '';
+        $this->is_featured = $gallery->is_featured;
+        $this->photo       = null;
+        $this->showModal   = true;
+    }
+
+    public function save(): void
+    {
+        $this->validate();
+
+        $data = [
+            'title'       => $this->title,
+            'description' => $this->description,
+            'category'    => $this->category,
+            'is_featured' => $this->is_featured,
+        ];
+
+        if ($this->photo) {
+            // Hapus foto lama jika edit
+            if ($this->editingId) {
+                $old = Gallery::find($this->editingId);
+                if ($old && Storage::disk('public')->exists($old->image_path)) {
+                    Storage::disk('public')->delete($old->image_path);
+                }
+            }
+            $data['image_path'] = $this->photo->store('gallery', 'public');
         }
 
-        if ($gallery->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($gallery->image)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($gallery->image);
+        if ($this->editingId) {
+            Gallery::findOrFail($this->editingId)->update($data);
+            session()->flash('success', 'Foto berhasil diperbarui!');
+        } else {
+            Gallery::create($data);
+            session()->flash('success', 'Foto berhasil ditambahkan!');
         }
 
-        $gallery->delete();
-
-        session()->flash('success', 'Gallery berhasil dihapus');
+        $this->resetForm();
+        $this->showModal = false;
     }
-};
-?>
+
+    public function confirmDelete(int $id): void
+    {
+        $this->deletingId     = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete(): void
+    {
+        if ($this->deletingId) {
+            $gallery = Gallery::findOrFail($this->deletingId);
+            if (Storage::disk('public')->exists($gallery->image_path)) {
+                Storage::disk('public')->delete($gallery->image_path);
+            }
+            $gallery->delete();
+            session()->flash('success', 'Foto berhasil dihapus!');
+        }
+        $this->showDeleteModal = false;
+        $this->deletingId      = null;
+    }
+
+    public function openLightbox(int $id): void
+    {
+        $this->lightboxId   = $id;
+        $this->showLightbox = true;
+    }
+
+    public function toggleFeatured(int $id): void
+    {
+        $gallery = Gallery::findOrFail($id);
+        $gallery->update(['is_featured' => !$gallery->is_featured]);
+    }
+
+    public function getCategories(): array
+    {
+        return Gallery::whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category')
+            ->toArray();
+    }
+
+    private function resetForm(): void
+    {
+        $this->title       = '';
+        $this->description = '';
+        $this->category    = '';
+        $this->is_featured = false;
+        $this->photo       = null;
+        $this->resetValidation();
+    }
+
+    public function render()
+    {
+        $query = Gallery::query()
+            ->when($this->search, fn($q) =>
+                $q->where('title', 'like', '%' . $this->search . '%')
+                  ->orWhere('description', 'like', '%' . $this->search . '%')
+            )
+            ->when($this->filterCategory, fn($q) =>
+                $q->where('category', $this->filterCategory)
+            )
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('created_at', 'desc');
+
+        $galleries   = $query->paginate(12);
+        $lightboxItem = $this->lightboxId ? Gallery::find($this->lightboxId) : null;
+        $categories  = $this->getCategories();
+        $totalCount  = Gallery::count();
+        $featuredCount = Gallery::where('is_featured', true)->count();
+
+        return view('livewire.gallery-manager', compact(
+            'galleries', 'lightboxItem', 'categories', 'totalCount', 'featuredCount'
+        ));
+    }
+}
+
 
 <div class="max-w-7xl mx-auto space-y-4">
     <flux:heading size="xl" class="text-zinc-800 dark:text-white">
