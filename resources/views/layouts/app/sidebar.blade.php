@@ -28,7 +28,7 @@
                         {{ __('Articles') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="photo" :href="route('gallery.index')" :current="request()->routeIs('gallery')" wire:navigate>
+                    <flux:sidebar.item icon="photo" :href="route('gallery.index')" :current="request()->routeIs('gallery.index')" wire:navigate>
                         {{ __('Gallery') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>

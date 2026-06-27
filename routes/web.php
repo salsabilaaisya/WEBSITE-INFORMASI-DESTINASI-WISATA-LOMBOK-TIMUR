@@ -16,11 +16,11 @@ Route::livewire('categories', 'pages::category.index')
     ->name('categories.index')
     ->middleware(['auth']);
 
-Route::livewire('/destinations', 'pages::destination.index')
+Route::livewire('destinations', 'pages::destination.index')
     ->name('destination.index')
     ->middleware(['auth']);
 
-Route::livewire('/gallery', 'pages::gallery.index')
+Route::livewire('gallery', 'pages::gallery.index')
     ->name('gallery.index')
     ->middleware(['auth']);
 
