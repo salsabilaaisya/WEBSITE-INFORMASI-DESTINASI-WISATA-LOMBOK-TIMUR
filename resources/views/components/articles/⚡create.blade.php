@@ -1,9 +1,11 @@
 <?php
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use App\Livewire\Forms\ArticlesForm;
 
 new class extends Component {
+    use WithFileUploads;
     public ArticlesForm $form;
     //
     public function save()
@@ -45,7 +47,17 @@ new class extends Component {
 
                 <flux:textarea label="Content" placeholder="Enter articles content" wire:model="form.content" />
 
-                <flux:input label="Thumbnail" placeholder="Enter thumbnail filename" wire:model="form.thumbnail" />
+                 <div>
+                    <label class="block text-sm font-medium mb-2">
+                        Thumbnail
+                    </label>
+
+                    <input
+                        type="file"
+                        wire:model="form.thumbnail"
+                        class="w-full border rounded p-2"
+                    >
+                </div>
 
                 <flux:input label="Published At" type="date" wire:model="form.published_at" />
             </div>
