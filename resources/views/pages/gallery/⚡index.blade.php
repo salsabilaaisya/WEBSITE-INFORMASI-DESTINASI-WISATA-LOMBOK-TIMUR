@@ -3,24 +3,28 @@
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Gallery;
+use App\Models\Destination;
 
 new class extends Component
 {
     use WithFileUploads;
 
+    public $destination_id='';
     public $title = '';
     public $image;
 
     public function with(): array
     {
         return [
-            'images' => Gallery::latest()->get(),
+            'images' => Gallery::with('destination')->latest()->get(),
+            'destinations'=>Destination::orderBy('name')->get(),
         ];
     }
 
     public function save()
     {
         $this->validate([
+            'destination_id'=>'required',
             'title' => 'required|string|max:255',
             'image' => 'required|image|max:2048',
         ], [
@@ -33,11 +37,12 @@ new class extends Component
         $imagePath = $this->image->store('gallery', 'public');
 
         Gallery::create([
-            'title' => $this->title,
+            'destination_id'=>$this->destination_id,
+            'caption' => $this->title,
             'image' => $imagePath,
         ]);
 
-        $this->reset(['title', 'image']);
+        $this->reset(['destination_id','title', 'image']);
 
         Flux::modal('add-gallery')->close();
 
@@ -95,6 +100,24 @@ new class extends Component
                 </flux:text>
             </div>
 
+            {{-- Destination --}}
+            <flux:select
+                label="Destination"
+                wire:model="destination_id"
+                placeholder="Pilih Destination"
+            >
+                @foreach ($destinations as $destination)
+                    <flux:select.option value="{{ $destination->id }}">
+                        {{ $destination->name }}
+                    </flux:select.option>
+                @endforeach
+            </flux:select>
+
+            @error('destination_id')
+                <p class="text-sm text-red-500">{{ $message }}</p>
+            @enderror
+
+            {{-- Title --}}
             <flux:input
                 label="Title"
                 placeholder="Masukkan judul gallery"
@@ -148,6 +171,7 @@ new class extends Component
         <flux:table.columns>
             <flux:table.column>ID</flux:table.column>
             <flux:table.column>Image</flux:table.column>
+            <flux:table.column>Destination</flux:table.column>
             <flux:table.column>Title</flux:table.column>
             <flux:table.column>Action</flux:table.column>
         </flux:table.columns>
@@ -161,7 +185,7 @@ new class extends Component
                         @if ($image->image)
                             <img
                                 src="{{ asset('storage/' . $image->image) }}"
-                                alt="{{ $image->title }}"
+                                alt="{{ $image->caption }}"
                                 class="w-16 h-16 rounded-lg object-cover"
                             >
                         @else
@@ -170,7 +194,11 @@ new class extends Component
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        {{ $image->title ?? '-' }}
+                        {{ $image->destination->name ?? '-' }}
+                    </flux:table.cell>
+
+                    <flux:table.cell>
+                        {{ $image->caption ?? '-' }}
                     </flux:table.cell>
 
                     <flux:table.cell>

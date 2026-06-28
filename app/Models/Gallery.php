@@ -10,20 +10,18 @@ class Gallery extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description',
-        'image_path',
-        'category',
-        'is_featured',
-        'sort_order',
-    ];
-
-    protected $casts = [
-        'is_featured' => 'boolean',
+        'destination_id',
+        'image',
+        'caption',
     ];
 
     public function getImageUrlAttribute(): string
     {
-        return asset('storage/' . $this->image_path);
+        return asset('storage/' . $this->image);
+    }
+
+    public function destination()
+    {
+        return $this->belongsTo(Destination::class);
     }
 }

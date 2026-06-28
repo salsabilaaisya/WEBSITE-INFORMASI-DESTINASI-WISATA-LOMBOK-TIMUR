@@ -24,4 +24,5 @@ class Destination extends Model
     {
         return $this->hasMany(Gallery::class);
     }
+
 }

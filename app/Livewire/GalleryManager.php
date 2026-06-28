@@ -13,7 +13,7 @@ class GalleryManager extends Component
     use WithFileUploads, WithPagination;
 
     // Form fields
-    public string $title = '';
+    public string $caption = '';
     public string $description = '';
     public string $category = '';
     public bool $is_featured = false;
@@ -39,7 +39,7 @@ class GalleryManager extends Component
             : 'required|image|max:2048';
 
         return [
-            'title'       => 'required|string|max:255',
+            'caption'       => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'category'    => 'nullable|string|max:100',
             'is_featured' => 'boolean',
@@ -48,7 +48,7 @@ class GalleryManager extends Component
     }
 
     protected $messages = [
-        'title.required'  => 'Judul foto wajib diisi.',
+        'caption.required'  => 'Judul foto wajib diisi.',
         'photo.required'  => 'Foto wajib diunggah.',
         'photo.image'     => 'File harus berupa gambar.',
         'photo.max'       => 'Ukuran foto maksimal 2MB.',
@@ -75,7 +75,7 @@ class GalleryManager extends Component
     {
         $gallery = Gallery::findOrFail($id);
         $this->editingId = $id;
-        $this->title       = $gallery->title;
+        $this->caption     = $gallery->caption;
         $this->description = $gallery->description ?? '';
         $this->category    = $gallery->category ?? '';
         $this->is_featured = $gallery->is_featured;
@@ -88,7 +88,7 @@ class GalleryManager extends Component
         $this->validate();
 
         $data = [
-            'title'       => $this->title,
+            'caption'       => $this->caption,
             'description' => $this->description,
             'category'    => $this->category,
             'is_featured' => $this->is_featured,
@@ -160,7 +160,7 @@ class GalleryManager extends Component
 
     private function resetForm(): void
     {
-        $this->title       = '';
+        $this->caption       = '';
         $this->description = '';
         $this->category    = '';
         $this->is_featured = false;
@@ -172,7 +172,7 @@ class GalleryManager extends Component
     {
         $query = Gallery::query()
             ->when($this->search, fn($q) =>
-                $q->where('title', 'like', '%' . $this->search . '%')
+                $q->where('caption', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
             )
             ->when($this->filterCategory, fn($q) =>
