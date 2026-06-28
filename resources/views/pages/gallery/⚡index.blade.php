@@ -4,11 +4,13 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Gallery;
 use App\Models\Destination;
+use Illuminate\Support\Facades\Storage;
 
 new class extends Component
 {
     use WithFileUploads;
 
+    public $gallery_id = null;
     public $destination_id='';
     public $title = '';
     public $image;
@@ -42,7 +44,7 @@ new class extends Component
             'image' => $imagePath,
         ]);
 
-        $this->reset(['destination_id','title', 'image']);
+        $this->reset(['gallery_id','destination_id','title', 'image']);
 
         Flux::modal('add-gallery')->close();
 
@@ -51,7 +53,51 @@ new class extends Component
 
     public function edit($id)
     {
-        session()->flash('info', 'Fitur edit gallery belum dibuat');
+        $gallery = Gallery::findorFail($id);
+
+        $this->gallery_id = $gallery->id;
+        $this->destination_id = $gallery->destination_id;
+        $this->title = $gallery->caption;
+
+        Flux::modal('add-gallery')->show();
+    }
+
+        public function update()
+    {
+        $this->validate([
+            'destination_id' => 'required',
+            'title' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        $gallery = Gallery::findOrFail($this->gallery_id);
+
+        $data = [
+            'destination_id' => $this->destination_id,
+            'caption' => $this->title,
+        ];
+
+        if ($this->image) {
+
+            if ($gallery->image && Storage::disk('public')->exists($gallery->image)) {
+                Storage::disk('public')->delete($gallery->image);
+            }
+
+            $data['image'] = $this->image->store('gallery', 'public');
+        }
+
+        $gallery->update($data);
+
+        $this->reset([
+            'gallery_id',
+            'destination_id',
+            'title',
+            'image'
+        ]);
+
+        Flux::modal('add-gallery')->close();
+
+        session()->flash('success', 'Gallery berhasil diperbarui.');
     }
 
     public function delete($id)
@@ -90,13 +136,13 @@ new class extends Component
 
     {{-- Modal Add Gallery --}}
     <flux:modal name="add-gallery" class="md:w-[500px]">
-        <form wire:submit.prevent="save" class="space-y-6">
+        <form wire:submit.prevent="{{ $gallery_id ? 'update' : 'save' }}" class="space-y-6">
             <div>
                 <flux:heading size="lg" class="text-zinc-900 dark:text-white">
-                    Add Gallery
+                    {{ $gallery_id ? 'Edit Gallery' : 'Add Gallery' }}
                 </flux:heading>
                 <flux:text class="mt-1 text-zinc-600 dark:text-zinc-400">
-                    Tambahkan data gallery baru.
+                    {{ $gallery_id ? 'Perbarui data gallery.' : 'Tambahkan data gallery baru.' }}
                 </flux:text>
             </div>
 
@@ -160,7 +206,7 @@ new class extends Component
                 </flux:modal.close>
 
                 <flux:button type="submit" variant="primary" color="rose">
-                    Save Gallery
+                    {{ $gallery_id ? 'Update Gallery' : 'Save Gallery' }}
                 </flux:button>
             </div>
         </form>
