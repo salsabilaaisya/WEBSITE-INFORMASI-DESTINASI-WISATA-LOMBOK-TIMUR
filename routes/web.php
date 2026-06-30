@@ -24,4 +24,8 @@ Route::livewire('gallery', 'pages::gallery.index')
     ->name('gallery.index')
     ->middleware(['auth']);
 
+Route::livewire('contact-messages', 'pages::contact-message.index')
+    ->name('contact-messages.index')
+    ->middleware(['auth']);
+
 require __DIR__ . '/settings.php';
