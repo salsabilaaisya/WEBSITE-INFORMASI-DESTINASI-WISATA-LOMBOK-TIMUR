@@ -33,7 +33,7 @@ new class extends Component
             'title.required' => 'Title wajib diisi.',
             'image.required' => 'Image wajib diupload.',
             'image.image' => 'File harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 2MB.',
+            'image.max' => 'Ukuran gambar maksimal 20MB.',
         ]);
 
         $imagePath = $this->image->store('gallery', 'public');
