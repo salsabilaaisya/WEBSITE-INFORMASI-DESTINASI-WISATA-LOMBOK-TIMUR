@@ -8,4 +8,6 @@
 
 @include('home.featured-destination')
 
+@include('home.contact')
+
 @endsection

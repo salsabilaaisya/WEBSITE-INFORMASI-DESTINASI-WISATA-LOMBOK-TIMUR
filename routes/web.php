@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Destination;
 use App\Models\Gallery;
 use App\Models\Article;
+use App\Models\ContactMessage;
+
 
 use App\Livewire\Admin\Category\Index as CategoryIndex;
 use App\Livewire\Admin\Destination\Index as DestinationIndex;
@@ -38,7 +40,6 @@ require __DIR__.'/settings.php';
 
 Route::get('/', function () {
 
-require __DIR__ . '/settings.php';
 
     $featuredDestinations = Destination::with('category')
         ->latest()
@@ -48,6 +49,31 @@ require __DIR__ . '/settings.php';
     return view('welcome', compact('featuredDestinations'));
 
 })->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Contact Form
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/contact', function () {
+
+    request()->validate([
+        'name' => 'required|max:255',
+        'email' => 'required|email',
+        'message' => 'required',
+    ]);
+
+    ContactMessage::create([
+        'name' => request('name'),
+        'email' => request('email'),
+        'message' => request('message'),
+    ]);
+
+    return redirect('/')
+        ->with('success', 'Pesan berhasil dikirim.');
+
+})->name('contact.store');
 
 
 /*
