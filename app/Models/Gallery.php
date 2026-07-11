@@ -11,8 +11,9 @@ class Gallery extends Model
 
     protected $fillable = [
         'destination_id',
+        'title',
         'image',
-        'caption',
+        'description',
     ];
 
     public function getImageUrlAttribute(): string

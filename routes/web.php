@@ -38,13 +38,8 @@ require __DIR__.'/settings.php';
 
 Route::get('/', function () {
 
-<<<<<<< HEAD
-Route::livewire('contact-messages', 'pages::contact-message.index')
-    ->name('contact-messages.index')
-    ->middleware(['auth']);
-
 require __DIR__ . '/settings.php';
-=======
+
     $featuredDestinations = Destination::with('category')
         ->latest()
         ->take(6)
@@ -188,4 +183,3 @@ Route::middleware(['auth'])
             ->name('articles');
 
     });
->>>>>>> 0391ce4 (Update: membuat tampilan home page atau membuat tampilan user, tapi blum full jadinya)

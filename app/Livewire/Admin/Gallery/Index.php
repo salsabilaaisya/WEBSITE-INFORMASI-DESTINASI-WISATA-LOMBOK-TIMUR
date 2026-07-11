@@ -17,6 +17,7 @@ class Index extends Component
     public $gallery_id = null;
     public $destination_id = '';
     public $title = '';
+    public $description = '';
     public $image;
 
     public $search = '';
@@ -28,7 +29,7 @@ class Index extends Component
                 ->whereHas('destination', function ($query) {
                     $query->where('name', 'like', "%{$this->search}%");
                 })
-                ->orWhere('caption', 'like', "%{$this->search}%")
+                ->orWhere('title', 'like', "%{$this->search}%")
                 ->latest()
                 ->paginate(10),
 
@@ -54,7 +55,7 @@ class Index extends Component
 
         Gallery::create([
             'destination_id' => $this->destination_id,
-            'caption' => $this->title,
+            'title' => $this->title,
             'image' => $imagePath,
         ]);
 
@@ -71,7 +72,7 @@ class Index extends Component
 
         $this->gallery_id = $gallery->id;
         $this->destination_id = $gallery->destination_id;
-        $this->title = $gallery->caption;
+        $this->title = $gallery->title;
 
         $this->resetValidation();
 
@@ -90,7 +91,7 @@ class Index extends Component
 
         $data = [
             'destination_id' => $this->destination_id,
-            'caption' => $this->title,
+            'title' => $this->title,
         ];
 
         if ($this->image) {
