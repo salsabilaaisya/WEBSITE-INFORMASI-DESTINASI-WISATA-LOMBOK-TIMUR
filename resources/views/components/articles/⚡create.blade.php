@@ -16,7 +16,7 @@ new class extends Component {
         // session
         session()->flash('success', 'Article created successfully');
 
-        $this->redirectRoute('articles.index',navigate: true);
+        $this->redirectRoute('frontend.articles',navigate: true);
 
     }
 

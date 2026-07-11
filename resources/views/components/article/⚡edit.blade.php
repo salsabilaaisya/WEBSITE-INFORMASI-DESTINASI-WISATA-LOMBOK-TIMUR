@@ -20,7 +20,7 @@ new class extends Component
         $this->form->update();
         Flux::modal('edit-article')->close();
         session()->flash('success', 'Article updated successfully');
-        $this->redirectRoute('articles.index', navigate: true);
+        $this->redirectRoute('frontend.articles', navigate: true);
     }
 
     public function resetForm()
@@ -41,7 +41,7 @@ new class extends Component
         $this->form->article->delete();
         Flux::modal('delete-article')->close();
         session()->flash('success', 'Article deleted successfully');
-        $this->redirectRoute('articles.index', navigate: true);
+        $this->redirectRoute('frontend.articles', navigate: true);
     }
 };
 ?>

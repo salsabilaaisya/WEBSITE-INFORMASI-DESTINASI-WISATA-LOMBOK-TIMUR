@@ -16,19 +16,19 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item> 
 
-                    <flux:sidebar.item icon="tag" :href="route('categories.index')" :current="request()->routeIs('categories.index')" wire:navigate>
+                    <flux:sidebar.item icon="tag" :href="route('admin.categories')" :current="request()->routeIs('admin.categories')" wire:navigate>
                         {{ __('Categories') }}
                     </flux:sidebar.item> 
 
-                    <flux:sidebar.item icon="map-pin" :href="route('destination.index')" :current="request()->routeIs('articles.index')" wire:navigate>
+                    <flux:sidebar.item icon="map-pin" :href="route('admin.destinations')" :current="request()->routeIs('admin.destinations')" wire:navigate>
                         {{ __('Destinations') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="newspaper" :href="route('articles.index')" :current="request()->routeIs('destination.index')" wire:navigate>
+                    <flux:sidebar.item icon="newspaper" :href="route('admin.articles')" :current="request()->routeIs('admin.articles')" wire:navigate>
                         {{ __('Articles') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="photo" :href="route('gallery.index')" :current="request()->routeIs('gallery.index')" wire:navigate>
+                    <flux:sidebar.item icon="photo" :href="route('admin.gallery')" :current="request()->routeIs('admin.gallery')" wire:navigate>
                         {{ __('Gallery') }}
                     </flux:sidebar.item>
                     
