@@ -28,7 +28,7 @@ new class extends Component
         $this->validate([
             'destination_id'=>'required',
             'title' => 'required|string|max:255',
-            'image' => 'required|image|max:2048',
+            'image' => 'required|image|max:20048',
         ], [
             'title.required' => 'Title wajib diisi.',
             'image.required' => 'Image wajib diupload.',
@@ -67,7 +67,7 @@ new class extends Component
         $this->validate([
             'destination_id' => 'required',
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:20048',
         ]);
 
         $gallery = Gallery::findOrFail($this->gallery_id);
