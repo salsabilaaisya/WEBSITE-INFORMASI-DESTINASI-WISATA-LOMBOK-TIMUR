@@ -121,8 +121,8 @@
                             <flux:heading size="lg">Destinasi Terbaru</flux:heading>
                             <flux:subheading class="text-xs">5 destinasi yang baru ditambahkan</flux:subheading>
                         </div>
-                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('destination.index')"
-                            wire:navigate>
+                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('admin.destinations')"
+                        >
                             Lihat semua
                         </flux:button>
                     </div>
@@ -139,8 +139,8 @@
                                 <flux:table.row>
                                     <flux:table.cell>
                                         <div class="flex items-center gap-3">
-                                            @if ($destination->image)
-                                                <img src="{{ asset('storage/image/' . $destination->image) }}"
+                                            @if ($destination->cover_path)
+                                                <img src="{{ asset('storage/'.$destination->cover_path) }}"
                                                     alt="{{ $destination->name }}"
                                                     class="size-9 rounded-lg object-cover shrink-0">
                                             @else
@@ -192,7 +192,7 @@
                             <flux:heading size="lg">Artikel Terbaru</flux:heading>
                             <flux:subheading class="text-xs">5 artikel terbaru</flux:subheading>
                         </div>
-                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('articles.index')"
+                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('admin.articles')"
                             wire:navigate>
                             Lihat semua
                         </flux:button>
