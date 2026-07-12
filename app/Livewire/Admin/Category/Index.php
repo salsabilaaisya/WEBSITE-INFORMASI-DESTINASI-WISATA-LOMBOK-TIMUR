@@ -2,23 +2,45 @@
 
 namespace App\Livewire\Admin\Category;
 
-use Livewire\Component;
 use App\Models\Category;
+use Livewire\Component;
+use Livewire\WithPagination;
+use Flux\Flux;
 
 class Index extends Component
 {
-    public string $name = '';
-    public string $description = '';
+    use WithPagination;
 
-    public ?int $editId = null;
-    public string $editName = '';
-    public string $editDescription = '';
+    protected $paginationTheme = 'tailwind';
 
+    // Form Create
+    public $name = '';
+    public $description = '';
+
+    // Form Edit
+    public $editId = null;
+    public $editName = '';
+    public $editDescription = '';
+
+    // Search
+    public $search = '';
+
+    /**
+     * Reset halaman ketika search berubah
+     */
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Simpan kategori baru
+     */
     public function save()
     {
         $this->validate([
-            'name' => ['required', 'min:3'],
-            'description' => ['nullable'],
+            'name' => 'required|string|min:3|max:255',
+            'description' => 'nullable|string',
         ]);
 
         Category::create([
@@ -26,11 +48,17 @@ class Index extends Component
             'description' => $this->description,
         ]);
 
-        $this->reset(['name', 'description']);
+        $this->reset([
+            'name',
+            'description',
+        ]);
 
-        session()->flash('success', 'Kategori berhasil ditambahkan!');
+        session()->flash('success', 'Category successfully added.');
     }
 
+    /**
+     * Ambil data untuk edit
+     */
     public function edit($id)
     {
         $category = Category::findOrFail($id);
@@ -38,12 +66,20 @@ class Index extends Component
         $this->editId = $category->id;
         $this->editName = $category->name;
         $this->editDescription = $category->description;
+
+        $this->resetValidation();
+
+        Flux::modal('add-category')->show();
     }
 
+    /**
+     * Update data
+     */
     public function update()
     {
         $this->validate([
-            'editName' => ['required', 'min:3'],
+            'editName' => 'required|string|min:3|max:255',
+            'editDescription' => 'nullable|string',
         ]);
 
         Category::findOrFail($this->editId)->update([
@@ -51,15 +87,16 @@ class Index extends Component
             'description' => $this->editDescription,
         ]);
 
-        $this->reset([
-            'editId',
-            'editName',
-            'editDescription',
-        ]);
+        $this->cancelEdit();
 
-        session()->flash('success', 'Kategori berhasil diperbarui!');
+        Flux::modal('add-category')->close();
+
+        session()->flash('success', 'Category successfully updated.');
     }
 
+    /**
+     * Batal edit
+     */
     public function cancelEdit()
     {
         $this->reset([
@@ -69,17 +106,46 @@ class Index extends Component
         ]);
     }
 
+    /**
+     * Hapus kategori
+     */
     public function delete($id)
     {
         Category::findOrFail($id)->delete();
 
-        session()->flash('success', 'Kategori berhasil dihapus!');
+        session()->flash('success', 'Category successfully deleted.');
+
+        $this->resetPage();
     }
 
+    /**
+     * Render
+     */
     public function render()
     {
+        $categories = Category::query()
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('description', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->paginate(10);
+
         return view('pages.category.index', [
-            'categories' => Category::latest()->get(),
+            'categories' => $categories,
         ]);
+    }
+
+    public function resetForm()
+    {
+        $this->reset([
+            'name',
+            'description',
+            'editId',
+            'editName',
+            'editDescription',
+        ]);
+
+        $this->resetValidation();
     }
 }

@@ -1,68 +1,180 @@
 <div class="max-w-7xl mx-auto space-y-6">
-    <flux:heading size="xl" class="text-zinc-800 dark:text-white">
-        Category
-    </flux:heading>
 
-    <flux:subheading size="lg" class="text-zinc-600 dark:text-zinc-400">
-        Manage your categories
-    </flux:subheading>
+    {{-- Header --}}
+    <div class="flex items-center justify-between">
 
-    <flux:separator variant="subtle" />
+        <div>
+            <flux:heading size="xl">
+                Category
+            </flux:heading>
 
+            <flux:subheading class="mt-1">
+                Manage your categories
+            </flux:subheading>
+        </div>
 
-    @if (session('success'))
-        <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700 dark:border-green-800 dark:bg-green-950/30 dark:text-green-300">
+        <flux:modal.trigger name="add-category">
+            <flux:button
+                variant="primary"
+                icon="plus"
+                wire:click="resetForm"
+            >
+                Add Category
+            </flux:button>
+        </flux:modal.trigger>
+
+    </div>
+
+    <flux:separator variant="subtle"/>
+
+    {{-- Flash Message --}}
+    @if(session()->has('success'))
+        <div class="rounded-lg bg-green-100 px-4 py-3 text-green-700">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- FORM TAMBAH CATEGORY --}}
-    <div class="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-        <flux:heading size="lg" class="mb-4 text-zinc-900 dark:text-white">
-            Tambah Kategori
-        </flux:heading>
-
-        <form wire:submit.prevent="save" class="space-y-4">
-            <flux:input
-                label="Nama Kategori"
-                wire:model="name"
-                placeholder="Masukkan nama kategori"
-            />
-
-            @error('name')
-                <p class="text-sm text-red-500">{{ $message }}</p>
-            @enderror
-
-            <flux:textarea
-                label="Deskripsi"
-                wire:model="description"
-                placeholder="Masukkan deskripsi kategori"
-            />
-
-            @error('description')
-                <p class="text-sm text-red-500">{{ $message }}</p>
-            @enderror
-
-            <div class="flex justify-end">
-                <flux:button type="submit" variant="primary" color="primary">
-                    Simpan
-                </flux:button>
-            </div>
-        </form>
+    {{-- Search --}}
+    <div class="w-80">
+        <flux:input
+            wire:model.live.debounce.300ms="search"
+            icon="magnifying-glass"
+            placeholder="Search category..."
+        />
     </div>
 
-    {{-- FORM EDIT CATEGORY --}}
-    @if ($editId)
-        <div class="rounded-xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm dark:border-yellow-800 dark:bg-yellow-950/20">
-            <flux:heading size="lg" class="mb-4 text-zinc-900 dark:text-white">
-                Edit Kategori
-            </flux:heading>
+    {{-- Table --}}
+    <div class="overflow-x-auto">
 
-            <form wire:submit.prevent="update" class="space-y-4">
+        <table class="w-full border-collapse">
+
+            <thead>
+
+                <tr class="border-b">
+
+                    <th class="py-3 text-left">
+                        ID
+                    </th>
+
+                    <th class="py-3 text-left">
+                        Category
+                    </th>
+
+                    <th class="py-3 text-left">
+                        Description
+                    </th>
+
+                    <th class="py-3 text-center">
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @forelse($categories as $category)
+
+                    <tr class="border-b hover:bg-zinc-50">
+
+                        <td class="py-4">
+                            {{ $category->id }}
+                        </td>
+
+                        <td class="py-4 font-medium">
+                            {{ $category->name }}
+                        </td>
+
+                        <td class="py-4 text-zinc-600">
+                            {{ $category->description ?: '-' }}
+                        </td>
+
+                        <td class="py-4">
+
+                            <div class="flex justify-center gap-2">
+
+                                <flux:button
+                                    size="sm"
+                                    variant="outline"
+                                    icon="pencil"
+                                    wire:click="edit({{ $category->id }})"
+                                >
+                                    Edit
+                                </flux:button>
+
+                                <flux:button
+                                    size="sm"
+                                    variant="danger"
+                                    icon="trash"
+                                    wire:click="delete({{ $category->id }})"
+                                    wire:confirm="Yakin ingin menghapus kategori ini?"
+                                >
+                                    Delete
+                                </flux:button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+
+                        <td colspan="4" class="py-10 text-center text-zinc-500">
+
+                            Belum ada kategori.
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {{-- Pagination --}}
+    <div class="mt-6">
+        {{ $categories->links() }}
+    </div>
+
+
+    {{-- Modal --}}
+    <flux:modal name="add-category" class="md:w-[500px]">
+
+        <form
+            wire:submit.prevent="{{ $editId ? 'update' : 'save' }}"
+            class="space-y-5"
+        >
+
+            <div>
+
+                <flux:heading size="lg">
+
+                    {{ $editId ? 'Edit Category' : 'Add Category' }}
+
+                </flux:heading>
+
+                <flux:text class="mt-1">
+
+                    {{ $editId ? 'Update category.' : 'Create new category.' }}
+
+                </flux:text>
+
+            </div>
+
+            @if($editId)
+
                 <flux:input
-                    label="Nama Kategori"
+                    label="Category Name"
                     wire:model="editName"
-                    placeholder="Masukkan nama kategori"
+                    placeholder="Category Name"
                 />
 
                 @error('editName')
@@ -70,68 +182,54 @@
                 @enderror
 
                 <flux:textarea
-                    label="Deskripsi"
+                    label="Description"
                     wire:model="editDescription"
-                    placeholder="Masukkan deskripsi kategori"
+                    placeholder="Description"
                 />
 
-                <div class="flex justify-end gap-3">
-                    <flux:button type="button" variant="outline" wire:click="cancelEdit">
-                        Batal
+            @else
+
+                <flux:input
+                    label="Category Name"
+                    wire:model="name"
+                    placeholder="Category Name"
+                />
+
+                @error('name')
+                    <p class="text-sm text-red-500">{{ $message }}</p>
+                @enderror
+
+                <flux:textarea
+                    label="Description"
+                    wire:model="description"
+                    placeholder="Description"
+                />
+
+            @endif
+
+            <div class="flex justify-end gap-3 pt-4">
+
+                <flux:modal.close>
+
+                    <flux:button variant="outline">
+                        Cancel
                     </flux:button>
 
-                    <flux:button type="submit" variant="primary" color="amber">
-                        Update
-                    </flux:button>
-                </div>
-            </form>
-        </div>
-    @endif
+                </flux:modal.close>
 
-    {{-- TABLE CATEGORY --}}
-    <flux:table>
-        <flux:table.columns>
-            <flux:table.column>ID</flux:table.column>
-            <flux:table.column>Name</flux:table.column>
-            <flux:table.column>Description</flux:table.column>
-            <flux:table.column>Action</flux:table.column>
-        </flux:table.columns>
+                <flux:button
+                    type="submit"
+                    variant="primary"
+                >
 
-        <flux:table.rows>
-            @forelse ($categories as $category)
-                <flux:table.row :key="$category->id">
-                    <flux:table.cell>{{ $category->id }}</flux:table.cell>
-                    <flux:table.cell>{{ $category->name }}</flux:table.cell>
-                    <flux:table.cell>{{ $category->description ?: '-' }}</flux:table.cell>
+                    {{ $editId ? 'Update Category' : 'Save Category' }}
 
-                    <flux:table.cell>
-                        <div class="flex items-center gap-2">
-                            <flux:button
-                                size="sm"
-                                variant="outline"
-                                wire:click="edit({{ $category->id }})"
-                            >
-                                Edit
-                            </flux:button>
+                </flux:button>
 
-                            <flux:button
-                                size="sm"
-                                variant="danger"
-                                wire:click="delete({{ $category->id }})"
-                                wire:confirm="Yakin ingin menghapus kategori ini?"
-                            >
-                                Hapus
-                            </flux:button>
-                        </div>
-                    </flux:table.cell>
-                </flux:table.row>
-            @empty
-                <flux:table.row>
-                    <flux:table.cell colspan="4" class="py-6 text-center text-zinc-500">
-                        Belum ada data kategori
-                    </flux:table.cell>
-                </flux:table.row>
-            @endforelse
-        </flux:table.rows>
-    </flux:table>
+            </div>
+
+        </form>
+
+    </flux:modal>
+
 </div>

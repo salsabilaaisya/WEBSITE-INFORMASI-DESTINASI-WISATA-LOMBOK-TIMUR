@@ -16,8 +16,7 @@ class Index extends Component
 
     public $gallery_id = null;
     public $destination_id = '';
-    public $title = '';
-    public $description = '';
+    public $caption = '';
     public $image;
 
     public $search = '';
@@ -26,10 +25,12 @@ class Index extends Component
     {
         return view('pages.gallery.index', [
             'images' => Gallery::with('destination')
-                ->whereHas('destination', function ($query) {
-                    $query->where('name', 'like', "%{$this->search}%");
+                ->where(function ($query) {
+                    $query->whereHas('destination', function ($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhere('caption', 'like', '%' . $this->search . '%');
                 })
-                ->orWhere('title', 'like', "%{$this->search}%")
                 ->latest()
                 ->paginate(10),
 
@@ -41,11 +42,11 @@ class Index extends Component
     {
         $this->validate([
             'destination_id' => 'required|exists:destinations,id',
-            'title' => 'required|string|max:255',
+            'caption' => 'required|string|max:255',
             'image' => 'required|image|max:2048',
         ], [
             'destination_id.required' => 'Destinasi wajib dipilih.',
-            'title.required' => 'Judul wajib diisi.',
+            'caption.required' => 'Keterangan wajib diisi.',
             'image.required' => 'Gambar wajib diupload.',
             'image.image' => 'File harus berupa gambar.',
             'image.max' => 'Ukuran gambar maksimal 2 MB.',
@@ -55,7 +56,7 @@ class Index extends Component
 
         Gallery::create([
             'destination_id' => $this->destination_id,
-            'title' => $this->title,
+            'caption' => $this->caption,
             'image' => $imagePath,
         ]);
 
@@ -72,7 +73,7 @@ class Index extends Component
 
         $this->gallery_id = $gallery->id;
         $this->destination_id = $gallery->destination_id;
-        $this->title = $gallery->title;
+        $this->caption = $gallery->caption;
 
         $this->resetValidation();
 
@@ -83,7 +84,7 @@ class Index extends Component
     {
         $this->validate([
             'destination_id' => 'required|exists:destinations,id',
-            'title' => 'required|string|max:255',
+            'caption' => 'required|string|max:255',
             'image' => 'nullable|image|max:2048',
         ]);
 
@@ -91,7 +92,7 @@ class Index extends Component
 
         $data = [
             'destination_id' => $this->destination_id,
-            'title' => $this->title,
+            'caption' => $this->caption,
         ];
 
         if ($this->image) {
@@ -136,7 +137,7 @@ class Index extends Component
         $this->reset([
             'gallery_id',
             'destination_id',
-            'title',
+            'caption',
             'image',
         ]);
 
