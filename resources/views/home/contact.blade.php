@@ -9,7 +9,14 @@
             Send us a message if you have questions or suggestions.
         </p>
 
+        @if(session('success'))
+            <div class="mb-5 rounded-lg bg-green-100 p-4 text-green-700">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <form action="{{ route('contact.store') }}" method="POST" class="space-y-5">
+
             @csrf
 
             <div>
@@ -20,9 +27,16 @@
                 <input
                     type="text"
                     name="name"
-                    class="w-full border rounded-lg px-4 py-3"
+                    value="{{ old('name') }}"
+                    class="w-full rounded-lg border px-4 py-3"
                     placeholder="Your Name"
-                    required>
+                >
+
+                @error('name')
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ $message }}
+                    </p>
+                @enderror
             </div>
 
             <div>
@@ -33,9 +47,16 @@
                 <input
                     type="email"
                     name="email"
-                    class="w-full border rounded-lg px-4 py-3"
+                    value="{{ old('email') }}"
+                    class="w-full rounded-lg border px-4 py-3"
                     placeholder="Your Email"
-                    required>
+                >
+
+                @error('email')
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ $message }}
+                    </p>
+                @enderror
             </div>
 
             <div>
@@ -46,14 +67,21 @@
                 <textarea
                     name="message"
                     rows="6"
-                    class="w-full border rounded-lg px-4 py-3"
+                    class="w-full rounded-lg border px-4 py-3"
                     placeholder="Write your message..."
-                    required></textarea>
+                >{{ old('message') }}</textarea>
+
+                @error('message')
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ $message }}
+                    </p>
+                @enderror
             </div>
 
             <button
                 type="submit"
-                class="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-lg">
+                class="rounded-lg bg-teal-600 px-8 py-3 text-white hover:bg-teal-700"
+            >
                 Send Message
             </button>
 

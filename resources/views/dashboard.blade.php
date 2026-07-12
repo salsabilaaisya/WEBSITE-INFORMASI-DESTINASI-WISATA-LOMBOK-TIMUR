@@ -4,6 +4,10 @@
     $totalCategories = \App\Models\Category::count();
     $totalGalleries = \App\Models\Gallery::count();
 
+    $totalMessages = \App\Models\ContactMessage::count();
+    $unreadMessages = \App\Models\ContactMessage::where('is_read', false)->count();
+    $recentMessages = \App\Models\ContactMessage::latest()->take(5)->get();
+
     $recentDestinations = \App\Models\Destination::with('category')->latest()->take(5)->get();
     $recentArticles = \App\Models\Article::latest()->take(5)->get();
 
@@ -43,6 +47,15 @@
             'gradient' => 'from-emerald-400 to-teal-600',
             'bg' => 'bg-emerald-50 dark:bg-emerald-950/30',
             'text' => 'text-emerald-600 dark:text-emerald-400',
+        ],
+        [
+            'label' => 'Pesan Masuk',
+            'value' => $totalMessages,
+            'desc' => 'Total pesan masuk',
+            'icon' => 'envelope',
+            'gradient' => 'from-amber-400 to-orange-600',
+            'bg' => 'bg-amber-50 dark:bg-amber-950/30',
+            'text' => 'text-amber-600 dark:text-amber-400',
         ],
     ];
 @endphp
@@ -111,10 +124,10 @@
         </div>
 
         {{-- ── BOTTOM SECTION ───────────────────────────────────────── --}}
-        <div class="grid gap-6 lg:grid-cols-5">
+        <div class="grid gap-6 lg:grid-cols-3">
 
             {{-- Recent Destinations – 3 cols --}}
-            <div class="lg:col-span-3">
+            <div class="lg:col-span-2">
                 <flux:card class="h-full">
                     <div class="mb-4 flex items-center justify-between">
                         <div>
@@ -185,7 +198,7 @@
             </div>
 
             {{-- Recent Articles – 2 cols --}}
-            <div class="lg:col-span-2">
+            <div class="lg:col-span-1">
                 <flux:card class="h-full">
                     <div class="mb-4 flex items-center justify-between">
                         <div>
@@ -196,6 +209,85 @@
                             wire:navigate>
                             Lihat semua
                         </flux:button>
+                    </div>
+
+                    {{-- Recent Contact Messages --}}
+                    <div class="lg:col-span-1">
+                        <flux:card>
+
+                            <div class="mb-4 flex items-center justify-between">
+
+                                <div>
+                                    <flux:heading size="lg">
+                                        Contact Messages
+                                    </flux:heading>
+
+                                    <flux:subheading class="text-xs">
+                                        5 pesan terbaru
+                                    </flux:subheading>
+                                </div>
+
+                                <flux:button
+                                    variant="ghost"
+                                    size="sm"
+                                    icon="arrow-right"
+                                    :href="route('admin.messages')">
+
+                                    Lihat semua
+
+                                </flux:button>
+
+                            </div>
+
+                            <div class="space-y-3">
+
+                                @forelse($recentMessages as $message)
+
+                                    <div class="flex items-start justify-between border-b pb-3">
+
+                                        <div>
+
+                                            <p class="font-medium">
+                                                {{ $message->name }}
+                                            </p>
+
+                                            <p class="text-sm text-zinc-500">
+                                                {{ Str::limit($message->message,40) }}
+                                            </p>
+
+                                            <p class="text-xs text-zinc-400 mt-1">
+                                                {{ $message->created_at->diffForHumans() }}
+                                            </p>
+
+                                        </div>
+
+                                        @if($message->is_read)
+
+                                            <flux:badge color="green">
+                                                Dibaca
+                                            </flux:badge>
+
+                                        @else
+
+                                            <flux:badge color="red">
+                                                Belum Dibaca
+                                            </flux:badge>
+
+                                        @endif
+
+                                    </div>
+
+                                @empty
+
+                                    <p class="text-center text-sm text-zinc-400 py-6">
+                                        Belum ada pesan.
+                                    </p>
+
+                                @endforelse
+
+                            </div>
+
+                        </flux:card>
                     </div>
 
                     <div class="flex flex-col divide-y divide-zinc-100 dark:divide-zinc-800">

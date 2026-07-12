@@ -13,6 +13,7 @@ use App\Livewire\Admin\Category\Index as CategoryIndex;
 use App\Livewire\Admin\Destination\Index as DestinationIndex;
 use App\Livewire\Admin\Gallery\Index as GalleryIndex;
 use App\Livewire\Admin\Article\Index as ArticleIndex;
+use App\Livewire\Admin\Message\Index as MessageIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -207,5 +208,8 @@ Route::middleware(['auth'])
 
         Route::get('/articles', ArticleIndex::class)
             ->name('articles');
+
+        Route::get('/messages', MessageIndex::class)
+            ->name('messages');
 
     });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -8,6 +9,8 @@
     <title>@yield('title','Explore East Lombok')</title>
 
     @vite(['resources/css/app.css','resources/js/app.js'])
+
+    @livewireStyles
 
 </head>
 
@@ -23,5 +26,8 @@
 
     @include('partials.footer')
 
+    @livewireScripts
+
 </body>
+
 </html>

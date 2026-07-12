@@ -31,6 +31,10 @@
                     <flux:sidebar.item icon="photo" :href="route('admin.gallery')" :current="request()->routeIs('admin.gallery')" wire:navigate>
                         {{ __('Gallery') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="envelope" :href="route('admin.messages')" :current="request()->routeIs('admin.messages')" wire:navigate>
+                        {{ __('Contact Messages') }}
+                    </flux:sidebar.item>
                 
                 </flux:sidebar.group>
             </flux:sidebar.nav>
