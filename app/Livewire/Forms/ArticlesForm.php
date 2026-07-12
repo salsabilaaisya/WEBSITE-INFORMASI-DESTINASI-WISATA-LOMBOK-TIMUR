@@ -29,7 +29,6 @@ class ArticlesForm extends Form
             'content' => [
                 'nullable',
                 'string',
-                'max:1000',
             ],
             'thumbnail' => [
             'nullable',

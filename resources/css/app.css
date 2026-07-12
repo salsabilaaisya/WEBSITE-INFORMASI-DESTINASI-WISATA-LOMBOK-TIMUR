@@ -193,6 +193,40 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+.tiptap-editor .tiptap {
+    @apply min-h-[250px] p-4 outline-hidden;
+}
+
+.tiptap-editor .tiptap p.is-editor-empty:first-child::before {
+    @apply text-zinc-400 dark:text-zinc-500 float-left pointer-events-none h-0 content-[attr(data-placeholder)];
+}
+
+.tiptap-editor .tiptap h1 { @apply text-2xl font-bold mb-3; }
+.tiptap-editor .tiptap h2 { @apply text-xl font-semibold mb-2; }
+.tiptap-editor .tiptap h3 { @apply text-lg font-medium mb-1; }
+.tiptap-editor .tiptap p { @apply mb-2; }
+.tiptap-editor .tiptap ul { @apply list-disc pl-6 mb-2; }
+.tiptap-editor .tiptap ol { @apply list-decimal pl-6 mb-2; }
+.tiptap-editor .tiptap a { @apply text-primary underline cursor-pointer; }
+.tiptap-editor .tiptap img { @apply inline max-w-full h-auto rounded my-2; }
+.tiptap-editor .tiptap blockquote { @apply border-l-4 border-primary pl-4 italic my-2; }
+.tiptap-editor .tiptap code { @apply bg-zinc-100 dark:bg-zinc-800 rounded px-1.5 py-0.5 text-sm font-mono; }
+.tiptap-editor .tiptap pre { @apply bg-zinc-900 dark:bg-zinc-950 text-zinc-100 rounded-lg p-4 my-2 overflow-x-auto; }
+.tiptap-editor .tiptap pre code { @apply bg-transparent p-0 text-inherit; }
+
+.tiptap-editor .tiptap:focus { @apply outline-hidden; }
+
+.tiptap-toolbar button {
+    @apply px-2.5 py-1.5 text-sm rounded-md transition-colors
+           text-zinc-600 dark:text-zinc-400
+           hover:bg-zinc-100 dark:hover:bg-zinc-800
+           disabled:opacity-40 disabled:cursor-not-allowed;
+}
+
+.tiptap-toolbar button.is-active {
+    @apply bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-white;
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
