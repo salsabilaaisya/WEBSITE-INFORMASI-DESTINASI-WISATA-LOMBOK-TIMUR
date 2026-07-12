@@ -28,7 +28,7 @@
         </div>
     @endif
 
-    <div class="flex items-center justify-between gap-4">
+<div class="space-y-5">
 
     <div class="w-full max-w-sm">
         <flux:input

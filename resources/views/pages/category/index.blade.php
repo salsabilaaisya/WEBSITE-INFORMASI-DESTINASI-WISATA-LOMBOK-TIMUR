@@ -9,6 +9,7 @@
 
     <flux:separator variant="subtle" />
 
+
     @if (session('success'))
         <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700 dark:border-green-800 dark:bg-green-950/30 dark:text-green-300">
             {{ session('success') }}
