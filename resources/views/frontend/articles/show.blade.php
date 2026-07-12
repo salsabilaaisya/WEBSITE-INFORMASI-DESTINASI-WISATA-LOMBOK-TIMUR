@@ -1,246 +1,127 @@
 @extends('layouts.frontend')
 
-@section('title',$article->title)
+@section('title', $article->title)
 
 @section('content')
 
-<section class="relative h-[550px]">
+{{-- HERO --}}
+<section class="relative h-[550px] overflow-hidden">
 
-@if($article->image)
+    @if($article->thumbnail)
+        <img
+            src="{{ asset('storage/'.$article->thumbnail) }}"
+            class="absolute inset-0 h-full w-full object-cover"
+            alt="{{ $article->title }}">
+    @endif
 
-<img
-src="{{ asset('storage/'.$article->image) }}"
-class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black/60"></div>
 
-@endif
+    <div class="relative z-10 flex h-full items-center justify-center">
 
-<div class="absolute inset-0 bg-black/60"></div>
+        <div class="max-w-4xl px-6 text-center text-white">
 
-<div class="relative z-10 flex items-center justify-center h-full">
+            <p class="text-sm uppercase tracking-[8px] text-cyan-300">
+                EAST LOMBOK BLOG
+            </p>
 
-<div class="text-center text-white max-w-4xl">
+            <h1 class="mt-6 text-5xl font-bold leading-tight md:text-6xl">
+                {{ $article->title }}
+            </h1>
 
-<p class="uppercase tracking-[10px] text-cyan-300">
+            <p class="mt-8 text-lg text-gray-200">
+                {{ \Carbon\Carbon::parse($article->published_at ?? $article->created_at)->format('d F Y') }}
+            </p>
 
-East Lombok Blog
+        </div>
 
-</p>
-
-<h1 class="text-6xl font-bold mt-5">
-
-{{ $article->title }}
-
-</h1>
-
-<p class="mt-8 text-xl">
-
-{{ $article->created_at->format('d F Y') }}
-
-</p>
-
-</div>
-
-</div>
+    </div>
 
 </section>
 
-<section class="py-20">
-
-<div class="max-w-5xl mx-auto px-6">
-
-<a
-href="{{ route('frontend.articles') }}"
-class="text-teal-600 font-semibold">
-
-← Back to Articles
-
-</a>
-
-<div class="bg-white shadow-xl rounded-3xl p-12 mt-10">
-
-<div class="prose prose-lg max-w-none">
-
-{!! $article->content !!}
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="py-20 bg-slate-50">
-
-<div class="max-w-5xl mx-auto px-6">
-
-<a
-href="{{ route('frontend.articles') }}"
-class="text-teal-600"
->
-
-← Back
-
-</a>
-
-@if($article->thumbnail)
-
-<img
-src="{{ asset('storage/'.$article->thumbnail) }}"
-class="w-full h-[450px] object-cover rounded-3xl mt-8"
->
-
-@endif
-
-<h1 class="text-5xl font-bold mt-10">
-
-{{ $article->title }}
-
-</h1>
-
-<p class="mt-4 text-gray-500">
-
-{{ $article->created_at->format('d F Y') }}
-
-</p>
-
-<div class="prose max-w-none mt-10">
-
-{!! $article->content !!}
-
-</div>
-
-</div>
-
-</section>
-
-@if($related->count())
-
-<section class="py-20">
-
-<div class="max-w-7xl mx-auto px-6">
-
-<h2 class="text-4xl font-bold mb-10">
-
-Related Articles
-
-</h2>
-
-<div class="grid md:grid-cols-3 gap-8">
-
-@foreach($related as $item)
-
-<div class="bg-white rounded-3xl shadow overflow-hidden">
-
-@if($item->thumbnail)
-
-<img
-src="{{ asset('storage/'.$item->thumbnail) }}"
-class="w-full h-52 object-cover"
->
-
-@endif
-
-<div class="p-6">
-
-<h3 class="text-xl font-bold">
-
-{{ $item->title }}
-
-</h3>
-
-<p class="mt-3 text-gray-600">
-
-{{ \Illuminate\Support\Str::limit(strip_tags($item->content),100) }}
-
-</p>
-
-<a
-href="{{ route('frontend.articles.show',$item) }}"
-class="inline-block mt-4 text-teal-600 font-semibold"
->
-
-Read More →
-
-</a>
-
-</div>
-
-</div>
-
-@endforeach
-
-</div>
-
-</div>
-
-</section>
-
-@endif
-
-@if($related->count())
-
+{{-- ARTICLE --}}
 <section class="bg-gray-50 py-20">
 
-<div class="max-w-7xl mx-auto px-6">
+    <div class="mx-auto max-w-5xl px-6">
 
-<h2 class="text-4xl font-bold mb-10">
+        <a
+            href="{{ route('frontend.articles') }}"
+            class="inline-flex items-center font-semibold text-teal-600 transition hover:text-teal-700">
 
-Related Articles
+            ← Back to Articles
 
-</h2>
+        </a>
 
-<div class="grid md:grid-cols-3 gap-8">
+        <div class="mt-8 rounded-3xl bg-white p-8 shadow-xl md:p-14">
 
-@foreach($related as $item)
+            <article class="article-content">
 
-<div class="bg-white rounded-2xl shadow overflow-hidden">
+                {!! $article->content !!}
 
-@if($item->image)
+            </article>
 
-<img
-src="{{ asset('storage/'.$item->image) }}"
-class="w-full h-52 object-cover">
+        </div>
 
-@endif
+    </div>
 
-<div class="p-6">
+</section>
 
-<p class="text-sm text-gray-500">
+{{-- RELATED ARTICLE --}}
+@if($related->count())
 
-{{ $item->created_at->format('d M Y') }}
+<section class="py-20">
 
-</p>
+    <div class="mx-auto max-w-7xl px-6">
 
-<h3 class="text-2xl font-bold mt-3">
+        <h2 class="mb-12 text-4xl font-bold">
+            Related Articles
+        </h2>
 
-{{ $item->title }}
+        <div class="grid gap-8 md:grid-cols-3">
 
-</h3>
+            @foreach($related as $item)
 
-<p class="mt-3 text-gray-600">
+                <div class="overflow-hidden rounded-3xl bg-white shadow transition duration-300 hover:shadow-xl">
 
-{{ \Illuminate\Support\Str::limit(strip_tags($item->content),100) }}
+                    @if($item->thumbnail)
 
-</p>
+                        <img
+                            src="{{ asset('storage/'.$item->thumbnail) }}"
+                            class="h-52 w-full object-cover"
+                            alt="{{ $item->title }}">
 
-<a
-href="{{ route('frontend.articles.show',$item) }}"
-class="inline-block mt-5 text-teal-600 font-semibold">
+                    @endif
 
-Read More →
+                    <div class="p-6">
 
-</a>
+                        <p class="text-sm text-gray-500">
+                            {{ $item->created_at->format('d F Y') }}
+                        </p>
 
-</div>
+                        <h3 class="mt-3 text-2xl font-bold">
+                            {{ $item->title }}
+                        </h3>
 
-</div>
+                        <p class="mt-4 text-justify leading-7 text-gray-600">
+                            {{ \Illuminate\Support\Str::limit(strip_tags($item->content),120) }}
+                        </p>
 
-@endforeach
+                        <a
+                            href="{{ route('frontend.articles.show',$item) }}"
+                            class="mt-6 inline-flex font-semibold text-teal-600 hover:text-teal-700">
 
-</div>
+                            Read More →
 
-</div>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            @endforeach
+
+        </div>
+
+    </div>
 
 </section>
 
