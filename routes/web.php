@@ -86,8 +86,30 @@ Route::post('/contact', function () {
 Route::get('/destinations', function () {
 
     $destinations = Destination::with('category')
+
+        ->when(request('search'), function ($query) {
+
+            $query->where(function ($q) {
+
+                $q->where('name', 'like', '%' . request('search') . '%')
+                  ->orWhere('location', 'like', '%' . request('search') . '%')
+                  ->orWhere('description', 'like', '%' . request('search') . '%');
+
+            });
+
+        })
+
+        ->when(request('category'), function ($query) {
+
+            $query->where('category_id', request('category'));
+
+        })
+
         ->latest()
-        ->get();
+
+        ->paginate(6)
+
+        ->withQueryString();
 
     $categories = Category::orderBy('name')->get();
 
@@ -106,7 +128,8 @@ Route::get('/destinations/{destination}', function (Destination $destination) {
         'galleries',
     ]);
 
-    $related = Destination::where('id', '!=', $destination->id)
+    $related = Destination::with('category')
+        ->where('id','!=',$destination->id)
         ->latest()
         ->take(3)
         ->get();
