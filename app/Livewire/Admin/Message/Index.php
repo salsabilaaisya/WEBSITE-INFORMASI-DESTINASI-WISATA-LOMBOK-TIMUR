@@ -2,58 +2,46 @@
 
 namespace App\Livewire\Admin\Message;
 
-use App\Models\ContactMessage;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Flux\Flux;
+use App\Models\ContactMessage;
 
 class Index extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'tailwind';
+    public ?ContactMessage $contactMessage = null;
 
-    public $search = '';
-
-    public $selectedMessage = null;
-
-    public function updatingSearch()
+    #[Computed]
+    public function contactMessages()
     {
-        $this->resetPage();
+        return ContactMessage::latest()->paginate(10);
     }
 
-    public function view($id)
+    #[On('confirm-delete')]
+    public function confirmDelete($id)
     {
-        $this->selectedMessage = ContactMessage::findOrFail($id);
+        $this->contactMessage = ContactMessage::findOrFail($id);
 
-        if (!$this->selectedMessage->is_read) {
+        Flux::modal('delete-contact-message')->show();
+    }
 
-            $this->selectedMessage->update([
-                'is_read' => true,
-            ]);
-
-            $this->selectedMessage->refresh();
+    public function deleteContactMessage()
+    {
+        if ($this->contactMessage) {
+            $this->contactMessage->delete();
         }
-    }
 
-    public function delete($id)
-    {
-        ContactMessage::findOrFail($id)->delete();
+        Flux::modal('delete-contact-message')->close();
 
-        session()->flash('success', 'Message deleted successfully.');
+        session()->flash('success', 'Contact message deleted successfully');
     }
 
     public function render()
     {
-        return view('message.index', [
-        'messages' => ContactMessage::query()
-            ->when($this->search, function ($query) {
-                $query->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhere('message', 'like', "%{$this->search}%");
-            })
-            ->latest()
-            ->paginate(10),
-    ]);
+        return view('message.index');
     }
 }

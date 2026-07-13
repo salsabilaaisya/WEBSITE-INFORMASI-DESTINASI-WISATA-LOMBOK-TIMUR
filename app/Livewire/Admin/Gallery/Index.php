@@ -23,7 +23,7 @@ class Index extends Component
 
     public function render()
     {
-        return view('pages.gallery.index', [
+        return view('gallery.index', [
             'images' => Gallery::with('destination')
                 ->where(function ($query) {
                     $query->whereHas('destination', function ($q) {

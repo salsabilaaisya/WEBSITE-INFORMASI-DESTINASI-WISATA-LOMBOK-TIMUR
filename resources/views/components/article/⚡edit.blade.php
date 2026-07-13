@@ -1,7 +1,5 @@
 <?php
 
-
-
 use Livewire\Component;
 
 use Livewire\Attributes\On;
@@ -10,15 +8,11 @@ use App\Models\Article;
 
 use App\Livewire\Forms\ArticlesForm;
 
-
-
 new class extends Component
 
 {
 
     public ArticlesForm $form;
-
-
 
    #[On('edit-article')]
 
@@ -32,8 +26,6 @@ new class extends Component
 
     }
 
-
-
     public function updateArticle(){
 
         $this->form->update();
@@ -46,8 +38,6 @@ new class extends Component
 
     }
 
-
-
     public function resetForm()
 
     {
@@ -57,8 +47,6 @@ new class extends Component
         $this->form->reset();
 
     }
-
-
 
     #[On('confirm-delete')]
 
@@ -92,11 +80,7 @@ new class extends Component
 
 ?>
 
-
-
 <div>
-
-
 
     <flux:modal
 
@@ -132,13 +116,9 @@ new class extends Component
 
             </div>
 
-
-
             {{-- form field --}}
 
             <div class="space-y-6">
-
-
 
                 <flux:input
 

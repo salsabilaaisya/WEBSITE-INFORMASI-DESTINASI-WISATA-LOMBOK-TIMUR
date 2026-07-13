@@ -210,11 +210,11 @@
 
             <flux:input
                 label="Caption"
-                wire:model="title"
+                wire:model="caption"
                 placeholder="Caption Gallery"
             />
 
-            @error('title')
+            @error('caption')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
 
@@ -236,10 +236,10 @@
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
 
-                @if($image)
+                @if($this->image)
 
                     <img
-                        src="{{ $image->temporaryUrl() }}"
+                        src="{{ $this->image->temporaryUrl() }}"
                         class="w-32 h-32 object-cover rounded-lg mt-4 border"
                     >
 

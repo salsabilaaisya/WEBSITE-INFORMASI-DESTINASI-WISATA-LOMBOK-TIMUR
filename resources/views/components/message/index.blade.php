@@ -1,260 +1,125 @@
-<div class="max-w-7xl mx-auto space-y-6">
-
-    {{-- Header --}}
-    <div class="flex items-center justify-between">
-
-        <div>
-            <flux:heading size="xl">
-                Contact Messages
-            </flux:heading>
-
-            <flux:subheading class="mt-1">
-                Manage messages from website visitors
-            </flux:subheading>
-        </div>
-
-    </div>
-
-    <flux:separator variant="subtle"/>
-
-    {{-- Flash Message --}}
-    @if(session()->has('success'))
-        <div class="rounded-lg bg-green-100 px-4 py-3 text-green-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Search --}}
-    <div class="w-80">
-        <flux:input
-            wire:model.live.debounce.300ms="search"
-            icon="magnifying-glass"
-            placeholder="Search message..."
-        />
-    </div>
+<div class="max-w-7xl mx-auto space-y-4">
+    <flux:heading size="xl" class="text-zinc-800 dark:text-white">Contact Messages</flux:heading>
+    <flux:subheading size="lg" class="text-zinc-600 dark:text-zinc-400">Manage your contact messages</flux:subheading>
+    <flux:separator variant="subtle" />
 
     {{-- Table --}}
     <div class="overflow-x-auto">
+        <flux:table :paginate="$this->contactMessages">
+            <flux:table.columns>
+                <flux:table.column>No</flux:table.column>
 
-        <table class="w-full border-collapse">
+                <flux:table.column>Name</flux:table.column>
 
-            <thead>
+                <flux:table.column>Email</flux:table.column>
 
-                <tr class="border-b">
+                <flux:table.column>Message</flux:table.column>
 
-                    <th class="py-3 text-left">ID</th>
+                <flux:table.column>Created At</flux:table.column>
 
-                    <th class="py-3 text-left">Name</th>
+                <flux:table.column>Action</flux:table.column>
+            </flux:table.columns>
 
-                    <th class="py-3 text-left">Email</th>
+            <flux:table.rows>
+                @foreach ($this->contactMessages as $contactMessage)
 
-                    <th class="py-3 text-left">Status</th>
+                    <flux:table.row :key="$contactMessage->id">
+                        
+                        <flux:table.cell>
+                            {{ $loop->iteration + $this->contactMessages->firstItem() - 1 }}
+                        </flux:table.cell>
 
-                    <th class="py-3 text-left">Date</th>
+                        <flux:table.cell>
+                            {{ $contactMessage->name }}
+                        </flux:table.cell>
 
-                    <th class="py-3 text-center">Action</th>
+                        <flux:table.cell>
+                            <a href="mailto:{{ $contactMessage->email }}"
+                               class="text-blue-600 hover:underline">
+                                {{ $contactMessage->email }}
+                            </a>
+                        </flux:table.cell>
 
-                </tr>
+                        <flux:table.cell class="text-zinc-500 dark:text-zinc-400">
+                            {{ Str::limit($contactMessage->message, 50) }}
+                        </flux:table.cell>
 
-            </thead>
+                        <flux:table.cell>
+                            {{ \Carbon\Carbon::parse($contactMessage->created_at)->format('d-m-Y') }}
+                        </flux:table.cell>
 
-            <tbody>
+                        <flux:table.cell>
 
-            @forelse($messages as $message)
-
-                <tr class="border-b hover:bg-zinc-50">
-
-                    <td class="py-4">
-                        {{ $message->id }}
-                    </td>
-
-                    <td class="py-4 font-medium">
-                        {{ $message->name }}
-                    </td>
-
-                    <td class="py-4">
-                        {{ $message->email }}
-                    </td>
-
-                    <td class="py-4">
-
-                        @if($message->is_read)
-
-                            <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-                                ✅ Sudah Dilihat
-                            </span>
-
-                        @else
-
-                            <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
-                                🔴 Belum Dilihat
-                            </span>
-
-                        @endif
-
-                    </td>
-
-                    </td>
-
-                    <td class="py-4">
-                        {{ $message->created_at->format('d M Y') }}
-                    </td>
-
-                    <td class="py-4">
-
-                        <div class="flex justify-center gap-2">
-
-                            <flux:modal.trigger name="view-message">
+                            <flux:dropdown>
 
                                 <flux:button
+                                    variant="ghost"
                                     size="sm"
-                                    variant="outline"
-                                    icon="eye"
-                                    wire:click="view({{ $message->id }})"
-                                >
-                                    View
+                                    icon="ellipsis-horizontal"
+                                    inset="top bottom">
                                 </flux:button>
 
-                            </flux:modal.trigger>
+                                <flux:menu>
 
-                            <flux:button
-                                size="sm"
-                                variant="danger"
-                                icon="trash"
-                                wire:click="delete({{ $message->id }})"
-                                wire:confirm="Delete this message?"
-                            >
-                                Delete
-                            </flux:button>
+                                    <flux:menu.item
+                                        variant="danger"
+                                        icon="trash"
+                                        wire:click="$dispatch('confirm-delete', {id: {{ $contactMessage->id }}})">
+                                        Delete
+                                    </flux:menu.item>
 
-                        </div>
+                                </flux:menu>
 
-                    </td>
+                            </flux:dropdown>
 
-                </tr>
+                        </flux:table.cell>
 
-            @empty
+                    </flux:table.row>
 
-                <tr>
+                @endforeach
+            </flux:table.rows>
 
-                    <td colspan="6" class="py-12 text-center text-zinc-500">
-
-                        No messages found.
-
-                    </td>
-
-                </tr>
-
-            @endforelse
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    {{-- Pagination --}}
-    <div>
-
-        {{ $messages->links() }}
-
-    </div>
-
-
-    {{-- Modal Detail --}}
-    <flux:modal
-        name="view-message"
-        class="md:w-[700px]"
-    >
-
-        @if($selectedMessage)
-
-            <div class="space-y-6">
-
-                <div>
-
-                    <flux:heading size="lg">
-                        Message Detail
-                    </flux:heading>
-
-                    <flux:text class="mt-1">
-                        Visitor information
-                    </flux:text>
-
-                </div>
-
-                <div class="space-y-4">
-
-                    <div>
-
-                        <p class="text-sm text-zinc-500">
-                            Name
-                        </p>
-
-                        <p class="font-semibold">
-                            {{ $selectedMessage->name }}
-                        </p>
-
-                    </div>
-
-                    <div>
-
-                        <p class="text-sm text-zinc-500">
-                            Email
-                        </p>
-
-                        <p class="font-semibold">
-                            {{ $selectedMessage->email }}
-                        </p>
-
-                    </div>
-
-                    <div>
-
-                        <p class="text-sm text-zinc-500">
-                            Sent At
-                        </p>
-
-                        <p>
-                            {{ $selectedMessage->created_at->format('d F Y H:i') }}
-                        </p>
-
-                    </div>
-
-                    <div>
-
-                        <p class="text-sm text-zinc-500">
-                            Message
-                        </p>
-
-                        <div class="mt-2 rounded-xl bg-zinc-100 p-4 dark:bg-zinc-800">
-
-                            {{ $selectedMessage->message }}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="flex justify-end">
-
-                    <flux:modal.close>
-
-                        <flux:button>
-
-                            Close
-
-                        </flux:button>
-
-                    </flux:modal.close>
-
-                </div>
-
-            </div>
-
-        @endif
-
-    </flux:modal>
-
+        </flux:table>
 </div>
+
+{{-- Delete Modal --}}
+<flux:modal
+    name="delete-contact-message"
+    class="md:w-96">
+
+    <form wire:submit.prevent="deleteContactMessage">
+
+        <div class="space-y-4">
+
+            <flux:heading size="lg">
+                Delete Contact Message
+            </flux:heading>
+
+            <flux:text>
+                Are you sure you want to delete this contact message?
+            </flux:text>
+
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+
+            <flux:modal.close>
+                <flux:button variant="outline">
+                    Cancel
+                </flux:button>
+            </flux:modal.close>
+
+            <flux:button
+                type="submit"
+                variant="primary"
+                color="danger">
+                Delete
+            </flux:button>
+
+        </div>
+
+    </form>
+
+</flux:modal>
+
+
