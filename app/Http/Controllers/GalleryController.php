@@ -1,11 +1,7 @@
-<?php
-
-namespace App\Http\Controllers;
-
-class GalleryController extends Controller
+public function index(Request $request)
 {
-    public function index()
-    {
-        return view('pages.gallery');
-    }
+    dd('Halo! Controller ini berfungsi!'); // TAMBAHKAN BARIS INI
+    
+    $query = Gallery::with('destination');
+    // ... sisa kode di bawahnya
 }

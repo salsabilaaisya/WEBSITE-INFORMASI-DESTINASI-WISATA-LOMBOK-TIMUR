@@ -42,7 +42,6 @@ require __DIR__.'/settings.php';
 
 Route::get('/', function () {
 
-
     $featuredDestinations = Destination::with('category')
         ->latest()
         ->take(6)
@@ -52,8 +51,8 @@ Route::get('/', function () {
 
 })->name('home');
 
-     Route::get('/about', AboutIndex::class)
-            ->name('about');
+Route::get('/about', AboutIndex::class)
+    ->name('about');
 
 /*
 |--------------------------------------------------------------------------
@@ -90,29 +89,18 @@ Route::post('/contact', function () {
 Route::get('/destinations', function () {
 
     $destinations = Destination::with('category')
-
         ->when(request('search'), function ($query) {
-
             $query->where(function ($q) {
-
                 $q->where('name', 'like', '%' . request('search') . '%')
                   ->orWhere('location', 'like', '%' . request('search') . '%')
                   ->orWhere('description', 'like', '%' . request('search') . '%');
-
             });
-
         })
-
         ->when(request('category'), function ($query) {
-
             $query->where('category_id', request('category'));
-
         })
-
         ->latest()
-
         ->paginate(6)
-
         ->withQueryString();
 
     $categories = Category::orderBy('name')->get();
@@ -148,13 +136,35 @@ Route::get('/destinations/{destination}', function (Destination $destination) {
 
 /*
 |--------------------------------------------------------------------------
-| Gallery
+| Gallery (SUDAH DILENGKAPI DENGAN FILTER & SEARCH)
 |--------------------------------------------------------------------------
 */
 
 Route::get('/gallery', function () {
 
-    $galleries = Gallery::with('destination')
+    $galleries = Gallery::with(['destination', 'destination.category'])
+        // 1. Logika untuk Pencarian (Search)
+        ->when(request('search'), function ($query) {
+            $query->where(function ($q) {
+                $q->where('caption', 'like', '%' . request('search') . '%')
+                  ->orWhereHas('destination', function ($destQuery) {
+                      $destQuery->where('name', 'like', '%' . request('search') . '%');
+                  });
+            });
+        })
+        // 2. Logika untuk Kategori (Pantai, Gunung, Air Terjun)
+        ->when(request('category'), function ($query) {
+            // Ubah 'air-terjun' di URL menjadi 'air terjun'
+            $category = str_replace('-', ' ', request('category'));
+            
+            $query->whereHas('destination', function ($q) use ($category) {
+                // Cari kecocokan di nama destinasi ATAU di nama kategorinya
+                $q->where('name', 'like', '%' . $category . '%')
+                  ->orWhereHas('category', function ($catQuery) use ($category) {
+                      $catQuery->where('name', 'like', '%' . $category . '%');
+                  });
+            });
+        })
         ->latest()
         ->get();
 
@@ -175,14 +185,12 @@ Route::get('/gallery', function () {
 Route::get('/articles', function () {
 
     $articles = Article::query()
-
         ->when(request('search'), function ($query) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . request('search') . '%')
                   ->orWhere('content', 'like', '%' . request('search') . '%');
             });
         })
-
         ->latest()
         ->paginate(6)
         ->withQueryString();
@@ -209,8 +217,15 @@ Route::get('/articles/{article}', function (Article $article) {
 
 })->name('frontend.articles.show');
 
-Route::get('/about', function () {
 
+/*
+|--------------------------------------------------------------------------
+| About
+|--------------------------------------------------------------------------
+*/
+// Saya memindahkan ini dari dalam route '/articles' sebelumnya agar strukturnya lebih rapi
+Route::get('/about-us', function () {
+    
     $about = About::first();
 
     return view('frontend.about.index', [
@@ -221,7 +236,7 @@ Route::get('/about', function () {
         'categoryCount' => Category::count(),
     ]);
 
-})->name('about');
+})->name('about-us');
 
 
 /*
