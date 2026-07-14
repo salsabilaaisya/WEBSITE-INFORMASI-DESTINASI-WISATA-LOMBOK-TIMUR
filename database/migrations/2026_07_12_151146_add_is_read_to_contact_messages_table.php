@@ -9,9 +9,11 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::table('contact_messages', function (Blueprint $table) {
-             $table->boolean('is_read')->default(false)->after('message');
-        });
+        if (!Schema::hasColumn('contact_messages', 'is_read')) {
+            Schema::table('contact_messages', function (Blueprint $table) {
+                $table->boolean('is_read')->default(false)->after('message');
+            });
+        }
     }
 
     public function down(): void

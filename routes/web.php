@@ -7,13 +7,14 @@ use App\Models\Destination;
 use App\Models\Gallery;
 use App\Models\Article;
 use App\Models\ContactMessage;
-
+use App\Models\About;
 
 use App\Livewire\Admin\Category\Index as CategoryIndex;
 use App\Livewire\Admin\Destination\Index as DestinationIndex;
 use App\Livewire\Admin\Gallery\Index as GalleryIndex;
 use App\Livewire\Admin\Article\Index as ArticleIndex;
 use App\Livewire\Admin\Message\Index as MessageIndex;
+use App\Livewire\Admin\About\Index as AboutIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,9 @@ Route::get('/', function () {
     return view('welcome', compact('featuredDestinations'));
 
 })->name('home');
+
+     Route::get('/about', AboutIndex::class)
+            ->name('about');
 
 /*
 |--------------------------------------------------------------------------
@@ -205,6 +209,20 @@ Route::get('/articles/{article}', function (Article $article) {
 
 })->name('frontend.articles.show');
 
+Route::get('/about', function () {
+
+    $about = About::first();
+
+    return view('frontend.about.index', [
+        'about' => $about,
+        'destinationCount' => Destination::count(),
+        'galleryCount' => Gallery::count(),
+        'articleCount' => Article::count(),
+        'categoryCount' => Category::count(),
+    ]);
+
+})->name('about');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -234,5 +252,8 @@ Route::middleware(['auth'])
 
         Route::get('/messages', MessageIndex::class)
             ->name('messages');
+
+        Route::get('/about', AboutIndex::class)
+            ->name('about');
 
     });

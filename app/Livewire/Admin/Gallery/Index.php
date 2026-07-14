@@ -43,13 +43,13 @@ class Index extends Component
         $this->validate([
             'destination_id' => 'required|exists:destinations,id',
             'caption' => 'required|string|max:255',
-            'image' => 'required|image|max:2048',
+            'image' => 'required|image|max:10240',
         ], [
             'destination_id.required' => 'Destinasi wajib dipilih.',
             'caption.required' => 'Keterangan wajib diisi.',
             'image.required' => 'Gambar wajib diupload.',
             'image.image' => 'File harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 2 MB.',
+            'image.max' => 'Ukuran gambar maksimal 10 MB.',
         ]);
 
         $imagePath = $this->image->store('gallery', 'public');
@@ -57,6 +57,7 @@ class Index extends Component
         Gallery::create([
             'destination_id' => $this->destination_id,
             'caption' => $this->caption,
+            'title' => $this->caption, // Assuming title is the same as caption for now
             'image' => $imagePath,
         ]);
 
@@ -85,7 +86,7 @@ class Index extends Component
         $this->validate([
             'destination_id' => 'required|exists:destinations,id',
             'caption' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10240',
         ]);
 
         $gallery = Gallery::findOrFail($this->gallery_id);

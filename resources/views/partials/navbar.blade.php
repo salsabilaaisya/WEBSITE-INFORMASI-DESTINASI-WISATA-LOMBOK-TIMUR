@@ -42,7 +42,7 @@
                     Articles
                 </a>
 
-                <a href="#" class="hover:text-teal-600 transition">
+                <a href="{{ route('about') }}">
                     About
                 </a>
 

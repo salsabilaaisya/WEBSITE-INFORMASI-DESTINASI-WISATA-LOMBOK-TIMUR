@@ -58,7 +58,7 @@ class Index extends Component
             'category_id' => 'required|exists:categories,id',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'cover_path' => 'nullable|image|max:2048',
+            'cover_path' => 'nullable|image|max:10240',
         ], [
             'name.required' => 'Nama destinasi wajib diisi.',
             'name.min' => 'Nama destinasi minimal 3 karakter.',
@@ -66,7 +66,7 @@ class Index extends Component
             'category_id.exists' => 'Kategori tidak valid.',
             'location.required' => 'Lokasi wajib diisi.',
             'cover_path.image' => 'File cover harus berupa gambar.',
-            'cover_path.max' => 'Ukuran gambar maksimal 2MB.',
+            'cover_path.max' => 'Ukuran gambar maksimal 10MB.',
         ]);
 
         $cover = null;
@@ -114,7 +114,7 @@ class Index extends Component
             'category_id' => 'required|exists:categories,id',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'cover_path' => 'nullable|image|max:2048',
+            'cover_path' => 'nullable|image|max:10240',
         ]);
 
         $destination = Destination::findOrFail($this->destination_id);

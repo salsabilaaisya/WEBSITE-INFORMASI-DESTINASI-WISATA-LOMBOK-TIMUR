@@ -35,6 +35,10 @@
                     <flux:sidebar.item icon="envelope" :href="route('admin.messages')" :current="request()->routeIs('admin.messages')" wire:navigate>
                         {{ __('Contact Messages') }}
                     </flux:sidebar.item>
+
+                    <flux:navlist.item icon="information-circle" :href="route('admin.about')" :current="request()->routeIs('admin.about')">
+                        {{ __('About') }}
+                    </flux:navlist.item>
                 
                 </flux:sidebar.group>
             </flux:sidebar.nav>
