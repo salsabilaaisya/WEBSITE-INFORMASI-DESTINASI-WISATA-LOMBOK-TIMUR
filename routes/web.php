@@ -224,7 +224,7 @@ Route::get('/articles/{article}', function (Article $article) {
 |--------------------------------------------------------------------------
 */
 // Saya memindahkan ini dari dalam route '/articles' sebelumnya agar strukturnya lebih rapi
-Route::get('/about-us', function () {
+Route::get('/about', function () {
     
     $about = About::first();
 
@@ -236,7 +236,7 @@ Route::get('/about-us', function () {
         'categoryCount' => Category::count(),
     ]);
 
-})->name('about-us');
+})->name('frontend.about');
 
 
 /*
@@ -262,8 +262,8 @@ Route::middleware(['auth'])
         Route::get('/gallery', GalleryIndex::class)
             ->name('gallery');
 
-        Route::get('/articles', ArticleIndex::class)
-            ->name('articles');
+        Route::get('/articles', \App\Livewire\Admin\Articles\Index::class)
+            ->name('articles.index');
 
         Route::get('/messages', MessageIndex::class)
             ->name('messages');

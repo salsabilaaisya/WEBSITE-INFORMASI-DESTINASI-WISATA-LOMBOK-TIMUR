@@ -205,7 +205,7 @@
                             <flux:heading size="lg">Artikel Terbaru</flux:heading>
                             <flux:subheading class="text-xs">5 artikel terbaru</flux:subheading>
                         </div>
-                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('admin.articles')"
+                        <flux:button variant="ghost" size="sm" icon="arrow-right" :href="route('admin.articles.index')"
                             wire:navigate>
                             Lihat semua
                         </flux:button>

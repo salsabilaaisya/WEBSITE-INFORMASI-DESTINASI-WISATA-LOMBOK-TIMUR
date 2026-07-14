@@ -17,7 +17,7 @@
             <flux:button
                 variant="primary"
                 icon="plus"
-                wire:click="resetForm"
+                wire:click="resetFo"
             >
                 Add Gallery
             </flux:button>

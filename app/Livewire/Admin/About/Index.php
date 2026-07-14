@@ -34,11 +34,9 @@ class Index extends Component
         $this->about = About::first();
 
         if (!$this->about) {
-
             $this->about = About::create([
                 'title' => '',
             ]);
-
         }
 
         $this->fill([
@@ -59,44 +57,32 @@ class Index extends Component
     public function save()
     {
         $this->validate([
-            'title' => 'required',
-            'short_description' => 'nullable',
-            'description' => 'nullable',
-            'vision' => 'nullable',
-            'mission' => 'nullable',
-            'address' => 'nullable',
-            'phone' => 'nullable',
-            'email' => 'nullable|email',
-            'facebook' => 'nullable',
-            'instagram' => 'nullable',
-            'youtube' => 'nullable',
+            'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string',
+            'description' => 'nullable|string',
+            'vision' => 'nullable|string',
+            'mission' => 'nullable|string',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'facebook' => 'nullable|string|max:255',
+            'instagram' => 'nullable|string|max:255',
+            'youtube' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:10240',
         ]);
 
         $data = [
-
             'title' => $this->title,
-
             'short_description' => $this->short_description,
-
             'description' => $this->description,
-
             'vision' => $this->vision,
-
             'mission' => $this->mission,
-
             'address' => $this->address,
-
             'phone' => $this->phone,
-
             'email' => $this->email,
-
             'facebook' => $this->facebook,
-
             'instagram' => $this->instagram,
-
             'youtube' => $this->youtube,
-
         ];
 
         if ($this->image) {
@@ -113,10 +99,7 @@ class Index extends Component
 
         $this->about->update($data);
 
-        session()->flash(
-            'success',
-            'About berhasil diperbarui.'
-        );
+        session()->flash('success', 'About berhasil diperbarui.');
     }
 
     public function render()

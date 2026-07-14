@@ -42,7 +42,7 @@
                     Articles
                 </a>
 
-                <a href="{{ route('about') }}">
+                <a href="{{ route('frontend.about') }}">
                     About
                 </a>
 

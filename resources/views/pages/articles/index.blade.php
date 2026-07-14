@@ -12,12 +12,13 @@
 
     <flux:modal.trigger name="create-article">
         <flux:button variant="primary" icon="plus">
+
             Add Article
         </flux:button>
     </flux:modal.trigger>
 
-    <livewire:articles.create />
-    <livewire:article.edit />
+    <livewire:admin.articles.create />
+    <livewire:admin.articles.edit />
 
     <x-flash-message />
 
@@ -111,7 +112,7 @@
                                     <flux:menu.item
                                         variant="danger"
                                         icon="trash"
-                                        wire:click="$dispatch('confirm-delete',{id:{{ $article->id }}})"
+                                        wire:click="delete({{ $article->id }})"
                                     >
                                         Delete
                                     </flux:menu.item>
