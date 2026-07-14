@@ -34,7 +34,7 @@
                         </div>
                         <div>
                             <p class="text-sm font-medium text-slate-500">Email us at</p>
-                            <a href="mailto:Paesal@gmail.com" class="text-lg font-semibold text-slate-800 hover:text-cyan-600 transition-colors">Paesal@gmail.com</a>
+                            <a href="mailto:Paesal@gmail.com" class="text-lg font-semibold text-slate-800 hover:text-cyan-600 transition-colors">dispar.kab.lotim@gmail.com</a>
                         </div>
                     </div>
                     
