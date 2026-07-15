@@ -17,7 +17,7 @@
             <flux:button
                 variant="primary"
                 icon="plus"
-                wire:click="resetFo"
+                wire:click="resetForm"
             >
                 Add Gallery
             </flux:button>
@@ -78,7 +78,7 @@
                     <tr class="border-b hover:bg-zinc-50">
 
                         <td class="py-3">
-                            {{ $image->id }}
+                            {{ $images->firstItem() + $loop->index }}
                         </td>
 
                         <td class="py-3">

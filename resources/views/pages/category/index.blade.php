@@ -11,60 +11,68 @@
             <flux:subheading class="mt-1">
                 Manage your categories
             </flux:subheading>
+
+            <flux:text class="mt-2 text-sm text-zinc-500">
+                Total Category :
+                <span class="font-semibold">{{ $categories->total() }}</span>
+            </flux:text>
         </div>
 
-        <flux:modal.trigger name="add-category">
-            <flux:button
-                variant="primary"
-                icon="plus"
-                wire:click="resetForm"
-            >
-                Add Category
-            </flux:button>
-        </flux:modal.trigger>
+        <div class="flex items-center gap-3">
+
+            <div class="w-72">
+                <flux:input
+                    wire:model.live.debounce.300ms="search"
+                    icon="magnifying-glass"
+                    placeholder="Search category..."
+                />
+            </div>
+
+            <flux:modal.trigger name="add-category">
+                <flux:button
+                    variant="primary"
+                    icon="plus"
+                    wire:click="resetForm"
+                >
+                    Add Category
+                </flux:button>
+            </flux:modal.trigger>
+
+        </div>
 
     </div>
 
-    <flux:separator variant="subtle"/>
+    <flux:separator variant="subtle" />
 
     {{-- Flash Message --}}
     @if(session()->has('success'))
-        <div class="rounded-lg bg-green-100 px-4 py-3 text-green-700">
+        <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- Search --}}
-    <div class="w-80">
-        <flux:input
-            wire:model.live.debounce.300ms="search"
-            icon="magnifying-glass"
-            placeholder="Search category..."
-        />
-    </div>
-
     {{-- Table --}}
-    <div class="overflow-x-auto">
+    <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
 
-        <table class="w-full border-collapse">
+        <table class="w-full table-fixed">
 
-            <thead>
+            <thead class="bg-zinc-50">
 
-                <tr class="border-b">
+                <tr>
 
-                    <th class="py-3 text-left">
-                        ID
+                    <th class="w-20 px-6 py-4 text-left text-sm font-semibold">
+                        No
                     </th>
 
-                    <th class="py-3 text-left">
+                    <th class="w-56 px-6 py-4 text-left text-sm font-semibold">
                         Category
                     </th>
 
-                    <th class="py-3 text-left">
+                    <th class="px-6 py-4 text-left text-sm font-semibold">
                         Description
                     </th>
 
-                    <th class="py-3 text-center">
+                    <th class="w-48 px-6 py-4 text-center text-sm font-semibold">
                         Action
                     </th>
 
@@ -76,21 +84,25 @@
 
                 @forelse($categories as $category)
 
-                    <tr class="border-b hover:bg-zinc-50">
+                    <tr class="border-t hover:bg-zinc-50 transition">
 
-                        <td class="py-4">
-                            {{ $category->id }}
+                        <td class="px-6 py-5 align-top">
+                            {{ $categories->firstItem() + $loop->index }}
                         </td>
 
-                        <td class="py-4 font-medium">
+                        <td class="px-6 py-5 align-top font-medium">
                             {{ $category->name }}
                         </td>
 
-                        <td class="py-4 text-zinc-600">
-                            {{ $category->description ?: '-' }}
+                        <td class="px-6 py-5 text-zinc-600 align-top">
+
+                            <div class="whitespace-normal break-words leading-6">
+                                {{ $category->description ?: '-' }}
+                            </div>
+
                         </td>
 
-                        <td class="py-4">
+                        <td class="px-6 py-5 align-middle">
 
                             <div class="flex justify-center gap-2">
 
@@ -123,10 +135,8 @@
 
                     <tr>
 
-                        <td colspan="4" class="py-10 text-center text-zinc-500">
-
+                        <td colspan="4" class="py-12 text-center text-zinc-500">
                             Belum ada kategori.
-
                         </td>
 
                     </tr>
@@ -140,10 +150,9 @@
     </div>
 
     {{-- Pagination --}}
-    <div class="mt-6">
+    <div class="mt-8">
         {{ $categories->links() }}
     </div>
-
 
     {{-- Modal --}}
     <flux:modal name="add-category" class="md:w-[500px]">
@@ -156,15 +165,11 @@
             <div>
 
                 <flux:heading size="lg">
-
                     {{ $editId ? 'Edit Category' : 'Add Category' }}
-
                 </flux:heading>
 
                 <flux:text class="mt-1">
-
                     {{ $editId ? 'Update category.' : 'Create new category.' }}
-
                 </flux:text>
 
             </div>
@@ -221,9 +226,7 @@
                     type="submit"
                     variant="primary"
                 >
-
                     {{ $editId ? 'Update Category' : 'Save Category' }}
-
                 </flux:button>
 
             </div>
