@@ -654,6 +654,7 @@
         @if(!empty($about?->instagram))
         <a href="{{ $about->instagram }}"
            target="_blank"
+           rel="noopener noreferrer"
            class="group flex items-center gap-5 p-5 bg-white rounded-2xl border hover:border-pink-400 hover:shadow-lg transition">
 
             <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center">
@@ -686,6 +687,7 @@
         @if(!empty($about?->facebook))
         <a href="{{ $about->facebook }}"
            target="_blank"
+           rel="noopener noreferrer"
            class="group flex items-center gap-5 p-5 bg-white rounded-2xl border hover:border-blue-500 hover:shadow-lg transition">
 
             <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
@@ -718,6 +720,7 @@
         @if(!empty($about?->youtube))
         <a href="{{ $about->youtube }}"
            target="_blank"
+           rel="noopener noreferrer"
            class="group flex items-center gap-5 p-5 bg-white rounded-2xl border hover:border-red-500 hover:shadow-lg transition">
 
             <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">

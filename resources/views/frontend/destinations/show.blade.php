@@ -59,9 +59,13 @@
                             Location
                         </p>
 
-                        <p class="text-lg font-semibold">
-                            {{ $destination->location }}
-                        </p>
+                        <a href="{{ $destination->location }}"
+                           target="_blank"
+                           class="text-lg font-semibold hover:text-teal-300 underline">
+
+                           {{ $destination->location }}
+
+                        </a>
 
                     </div>
 
@@ -236,11 +240,11 @@ d="M15 11a3 3 0 11-6 0 3 3 0 016 0"/>
 
 </div>
 
-<span class="text-gray-600">
-
-{{ $item->location }}
-
-</span>
+<a href="{{ $item->location }}"
+   target="_blank"
+   class="text-gray-600 hover:text-blue-600 hover:underline">
+    {{ $item->location }}
+</a>
 
 </div>
 
