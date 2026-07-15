@@ -8,7 +8,7 @@
 <section class="relative h-[600px] overflow-hidden flex items-center justify-center">
     {{-- Background Image with Parallax feel --}}
     <img
-        src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2070&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop"
         class="absolute inset-0 w-full h-full object-cover scale-105"
         alt="East Lombok Hero"
     >
