@@ -63,7 +63,9 @@
 
                     <th class="text-left py-3">Destination</th>
 
-                    <th class="text-left py-3">Caption</th>
+                    <th class="text-left py-3">Title</th>
+
+                    <th class="text-left py-3">Description</th>
 
                     <th class="text-center py-3">Action</th>
 
@@ -73,7 +75,7 @@
 
             <tbody>
 
-                @forelse($images as $image)
+                @forelse($images as $gallery)
 
                     <tr class="border-b hover:bg-zinc-50">
 
@@ -83,10 +85,10 @@
 
                         <td class="py-3">
 
-                            @if($image->image)
+                            @if($gallery->image)
 
                                 <img
-                                    src="{{ asset('storage/'.$image->image) }}"
+                                    src="{{ asset('storage/' . $gallery->image) }}"
                                     class="w-16 h-16 rounded-lg object-cover border"
                                 >
 
@@ -101,11 +103,15 @@
                         </td>
 
                         <td class="py-3">
-                            {{ $image->destination->name ?? '-' }}
+                            {{ $gallery->destination->name ?? '-' }}
                         </td>
 
                         <td class="py-3">
-                            {{ $image->caption }}
+                            {{ $gallery->title }}
+                        </td>
+
+                        <td class="py-3">
+                            {{ $gallery->description ?? '-' }}
                         </td>
 
                         <td class="py-3">
@@ -116,7 +122,7 @@
                                     size="sm"
                                     variant="ghost"
                                     icon="pencil"
-                                    wire:click="edit({{ $image->id }})"
+                                    wire:click="edit({{ $gallery->id }})"
                                 >
                                     Edit
                                 </flux:button>
@@ -125,7 +131,7 @@
                                     size="sm"
                                     variant="danger"
                                     icon="trash"
-                                    wire:click="delete({{ $image->id }})"
+                                    wire:click="delete({{ $gallery->id }})"
                                     wire:confirm="Yakin ingin menghapus gallery ini?"
                                 >
                                     Delete
@@ -141,10 +147,8 @@
 
                     <tr>
 
-                        <td colspan="5" class="text-center py-8 text-zinc-500">
-
+                        <td colspan="6" class="text-center py-8 text-zinc-500">
                             Belum ada data gallery.
-
                         </td>
 
                     </tr>
@@ -173,15 +177,11 @@
             <div>
 
                 <flux:heading size="lg">
-
                     {{ $gallery_id ? 'Edit Gallery' : 'Add Gallery' }}
-
                 </flux:heading>
 
                 <flux:text class="mt-1">
-
                     {{ $gallery_id ? 'Perbarui gallery.' : 'Tambahkan gallery baru.' }}
-
                 </flux:text>
 
             </div>
@@ -195,9 +195,7 @@
                 @foreach($destinations as $destination)
 
                     <flux:select.option value="{{ $destination->id }}">
-
                         {{ $destination->name }}
-
                     </flux:select.option>
 
                 @endforeach
@@ -209,21 +207,29 @@
             @enderror
 
             <flux:input
-                label="Caption"
-                wire:model="caption"
-                placeholder="Caption Gallery"
+                label="Title"
+                wire:model="title"
+                placeholder="Gallery Title"
             />
 
-            @error('caption')
+            @error('title')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+            @enderror
+
+            <flux:textarea
+                label="Description"
+                wire:model="description"
+                placeholder="Gallery Description"
+            />
+
+            @error('description')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
 
             <div>
 
                 <label class="text-sm font-medium">
-
                     Image
-
                 </label>
 
                 <input
@@ -236,10 +242,10 @@
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
 
-                @if($this->image)
+                @if($image)
 
                     <img
-                        src="{{ $this->image->temporaryUrl() }}"
+                        src="{{ $image->temporaryUrl() }}"
                         class="w-32 h-32 object-cover rounded-lg mt-4 border"
                     >
 
@@ -252,9 +258,7 @@
                 <flux:modal.close>
 
                     <flux:button variant="ghost">
-
                         Cancel
-
                     </flux:button>
 
                 </flux:modal.close>
@@ -263,9 +267,7 @@
                     type="submit"
                     variant="primary"
                 >
-
                     {{ $gallery_id ? 'Update Gallery' : 'Save Gallery' }}
-
                 </flux:button>
 
             </div>

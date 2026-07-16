@@ -4,11 +4,11 @@ namespace App\Livewire\Admin\Gallery;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use App\Models\Gallery;
 use App\Models\Destination;
 use Illuminate\Support\Facades\Storage;
 use Flux\Flux;
-use Livewire\WithPagination;
 
 class Index extends Component
 {
@@ -16,7 +16,8 @@ class Index extends Component
 
     public $gallery_id = null;
     public $destination_id = '';
-    public $caption = '';
+    public $title = '';
+    public $description = '';
     public $image;
 
     public $search = '';
@@ -29,7 +30,8 @@ class Index extends Component
                     $query->whereHas('destination', function ($q) {
                         $q->where('name', 'like', '%' . $this->search . '%');
                     })
-                    ->orWhere('caption', 'like', '%' . $this->search . '%');
+                    ->orWhere('title', 'like', '%' . $this->search . '%')
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
                 })
                 ->latest()
                 ->paginate(10),
@@ -42,11 +44,12 @@ class Index extends Component
     {
         $this->validate([
             'destination_id' => 'required|exists:destinations,id',
-            'caption' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'image' => 'required|image|max:10240',
         ], [
             'destination_id.required' => 'Destinasi wajib dipilih.',
-            'caption.required' => 'Keterangan wajib diisi.',
+            'title.required' => 'Title wajib diisi.',
             'image.required' => 'Gambar wajib diupload.',
             'image.image' => 'File harus berupa gambar.',
             'image.max' => 'Ukuran gambar maksimal 10 MB.',
@@ -56,8 +59,8 @@ class Index extends Component
 
         Gallery::create([
             'destination_id' => $this->destination_id,
-            'caption' => $this->caption,
-            'title' => $this->caption, // Assuming title is the same as caption for now
+            'title' => $this->title,
+            'description' => $this->description,
             'image' => $imagePath,
         ]);
 
@@ -74,7 +77,8 @@ class Index extends Component
 
         $this->gallery_id = $gallery->id;
         $this->destination_id = $gallery->destination_id;
-        $this->caption = $gallery->caption;
+        $this->title = $gallery->title;
+        $this->description = $gallery->description;
 
         $this->resetValidation();
 
@@ -85,7 +89,8 @@ class Index extends Component
     {
         $this->validate([
             'destination_id' => 'required|exists:destinations,id',
-            'caption' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'image' => 'nullable|image|max:10240',
         ]);
 
@@ -93,7 +98,8 @@ class Index extends Component
 
         $data = [
             'destination_id' => $this->destination_id,
-            'caption' => $this->caption,
+            'title' => $this->title,
+            'description' => $this->description,
         ];
 
         if ($this->image) {
@@ -138,7 +144,8 @@ class Index extends Component
         $this->reset([
             'gallery_id',
             'destination_id',
-            'caption',
+            'title',
+            'description',
             'image',
         ]);
 
